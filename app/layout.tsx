@@ -7,7 +7,6 @@ import ToasterProvider from "./providers/toasterProvider";
 import LoginModel from "./components/models/loginModel";
 import getCurrentUser from "./actions/getCurrentUser";
 import ServiceModel from "./components/models/serviceModel";
-import MapWithAddress from "./components/models/mapComponent";
 import SearchModel from "./components/models/searchModel";
 
 const geistSans = localFont({
