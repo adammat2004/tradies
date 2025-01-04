@@ -1,7 +1,7 @@
 'use client'
 import { IconType } from "react-icons";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { Suspense, useCallback } from "react";
 import qs from 'query-string';
 
 interface CategoryBoxProps {

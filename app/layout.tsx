@@ -8,6 +8,7 @@ import LoginModel from "./components/models/loginModel";
 import getCurrentUser from "./actions/getCurrentUser";
 import ServiceModel from "./components/models/serviceModel";
 import SearchModel from "./components/models/searchModel";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -43,7 +44,9 @@ export default async function RootLayout({
         <RegisterModel />
         <Navbar currentUser={currentUser}/>
         <div className="pb-20 pt-28">
-          {children}
+          <Suspense fallback={<div>Loading...</div>}>
+            {children}
+          </Suspense>
         </div>
       </body>
     </html>

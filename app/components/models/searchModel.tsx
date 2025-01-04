@@ -4,7 +4,7 @@ import qs from 'query-string';
 import { useRouter, useSearchParams } from "next/navigation";
 import Model from "./model";
 import useSearchModel from "@/app/hooks/useSearchModel";
-import { useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import Heading from '../heading';
 import { FieldValues, useForm } from 'react-hook-form';
 import SearchInput from '../Inputs/searchInput';

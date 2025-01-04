@@ -10,6 +10,7 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import { GiPaintRoller } from "react-icons/gi";
 import { MdRoofing } from "react-icons/md";
 import CategoryBox from "../categoryBox";
+import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export const categories = [

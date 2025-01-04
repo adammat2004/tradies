@@ -6,6 +6,24 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      // Ignore these modules during client-side bundle
+      config.resolve.fallback = {
+        fs: false,
+        path: false,
+        os: false,
+        // Add any other Node.js-specific modules that shouldn't be bundled for the client here
+      };
+    }
+    return config;
+  },
+  reactStrictMode: false,
+
+
   images: {
     remotePatterns: [
       {

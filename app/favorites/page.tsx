@@ -3,24 +3,29 @@ import EmptyState from "../components/emptyState";
 import getCurrentUser from "../actions/getCurrentUser";
 import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./favoriteClient";
+import { Suspense } from "react";
 
 const ListingPage = async () => {
     const listings = await getFavoriteListings();
     const currentUser = await getCurrentUser();
     if(listings.length === 0){
         return (
-            <EmptyState 
-                title="No favorites found"
-                subtitle="Looks like you have no favorite listings"
-            />
+            <Suspense fallback={<div>Loading...</div>} >
+                <EmptyState 
+                    title="No favorites found"
+                    subtitle="Looks like you have no favorite listings"
+                />
+            </Suspense>
         )
     }
 
     return (
-        <FavoritesClient 
-            listings={listings}
-            currentUser={currentUser}
-        />
+        <Suspense fallback={<div>Loading...</div>} >
+            <FavoritesClient 
+                listings={listings}
+                currentUser={currentUser}
+            />
+        </Suspense>
     )
 }
 
