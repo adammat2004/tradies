@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
     return config;
   },
   reactStrictMode: false,
+  redirects: async () => {
+    return [
+      {
+        source: '/404', // The URL for the page
+        destination: '/', // Where to redirect
+        permanent: true, // Indicates a permanent redirect
+      },
+    ];
+  },
 
 
   images: {

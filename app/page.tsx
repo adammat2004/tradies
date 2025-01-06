@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+
+import { Suspense } from "react";
 import getCurrentUser from "./actions/getCurrentUser";
 import getListings, { IListingsParams } from "./actions/getListings";
 import Container from "./components/container";
@@ -14,25 +17,29 @@ const Home = async ({ searchParams }: HomeProps) => {
 
   if(listings.length === 0){
     return (
-      <EmptyState
-        showReset
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <EmptyState
+          showReset
+        />
+      </Suspense>
     )
   }
   return (
-    <Container>
-      <div className="pt-24 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
-        {listings.map((listing) => {
-          return (
-            <ListingCard
-              currentUser={currentUser} 
-              key={listing.id}
-              data={listing}
-            />
-          )
-        })}
-      </div>  
-    </Container>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Container>
+        <div className="pt-24 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
+          {listings.map((listing) => {
+            return (
+              <ListingCard
+                currentUser={currentUser} 
+                key={listing.id}
+                data={listing}
+              />
+            )
+          })}
+        </div>  
+      </Container>
+    </Suspense>
   );
 }
 

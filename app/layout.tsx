@@ -38,15 +38,17 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ToasterProvider />
-        <ServiceModel />
-        <SearchModel />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ServiceModel />
+          <SearchModel />
+        </Suspense>
         <LoginModel />
         <RegisterModel />
-        <Navbar currentUser={currentUser}/>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Navbar currentUser={currentUser}/>
+        </Suspense>
         <div className="pb-20 pt-28">
-          <Suspense fallback={<div>Loading...</div>}>
-            {children}
-          </Suspense>
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         </div>
       </body>
     </html>
