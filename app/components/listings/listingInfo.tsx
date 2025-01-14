@@ -28,7 +28,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
         Discover our journey and learn how we provide exceptional services to our clients. With a rich history and a focus on quality, we strive to deliver excellence every day.
       </p>
       <p className="text-base text-gray-700 leading-relaxed">
-        To divide the screen into two sections using Tailwind CSS and Flexbox, you can use a flex layout with Tailwind's utility classes for layout, spacing, and alignment. Here’s a simple example of how to achieve this:
+        we specialize in creating custom designs that enhance the beauty and functionality of your property. Whether it's a lush garden, a serene patio, or a vibrant lawn, our team is dedicated to delivering exceptional results tailored to your vision.
       </p>
     </div>
     <div className="hidden lg:flex flex-col bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm w-1/3">
