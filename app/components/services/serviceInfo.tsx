@@ -4,7 +4,7 @@ import { SafeUser } from "@/app/types"
 import React from "react";
 import { IconType } from "react-icons";
 
-interface ListingInfoProps {
+interface ServiceInfoProps {
     user: SafeUser;
     description: string;
     title: string;
@@ -22,18 +22,18 @@ interface ListingInfoProps {
     } | undefined;
 }
 
-const ListingInfo: React.FC<ListingInfoProps> = ({
+const ServiceInfo: React.FC<ServiceInfoProps> = ({
     user,
     description,
-    category,
-    title,
     town,
-    city,
+    county,
     street,
     country,
-    county,
     phone,
-    email
+    city,
+    email,
+    category,
+    title
 }) => {
     return (
         <div className="md:col-span-8 flex flex-col gap-12 p-6 bg-white rounded-lg shadow-lg">
@@ -41,6 +41,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     <div className="flex-1">
       <h2 className="text-gray-900 text-3xl font-bold mb-4">About Us</h2>
       <p className="text-base text-gray-700 mb-4 leading-relaxed">
+        {/*Discover our journey and learn how we provide exceptional services to our clients. With a rich history and a focus on quality, we strive to deliver excellence every day.*/}
         {description}
       </p>
       <p className="text-base text-gray-700 leading-relaxed">
@@ -50,6 +51,10 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     <div className="hidden lg:flex flex-col bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm w-1/3">
       <h3 className="text-gray-900 text-xl font-semibold mb-4">Address</h3>
       <div className="text-base text-gray-700 space-y-2">
+        {/*<p>Cross Guns</p>
+        <p>Castletown</p>
+        <p>Navan</p>
+        <p>Meath</p>*/}
         <p>{street}</p>
         <p>{town}</p>
         <p>{city}</p>
@@ -62,11 +67,11 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
   <div className="flex flex-col mt-6 lg:hidden">
     <h3 className="text-gray-900 text-xl font-semibold mb-4">Address</h3>
     <div className="text-base text-gray-700 space-y-2">
-      <p>{street}</p>
-      <p>{town}</p>
-      <p>{city}</p>
-      <p>{county}</p>
-      <p>{country}</p>
+        <p>{street}</p>
+        <p>{town}</p>
+        <p>{city}</p>
+        <p>{county}</p>
+        <p>{country}</p>
     </div>
   </div>
 
@@ -87,4 +92,4 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     )
 }
 
-export default ListingInfo
+export default ServiceInfo

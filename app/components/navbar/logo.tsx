@@ -7,7 +7,7 @@ const Logo = () => {
     const router = useRouter();
 
     return (
-        <div onClick={() => (router.push('/'))} className="text-5xl hover:cursor-pointer"><h1 className="font-serif">Tradies</h1></div>
+        <div onClick={() => (router.push('/'))} className="text-5xl hover:cursor-pointer"><h1 className="font-serif">Tradeez</h1></div>
         /*<Image 
         onClick={() => router.push('/')}
         alt='Tradies'

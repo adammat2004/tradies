@@ -44,8 +44,9 @@ const ServiceModel = () => {
         defaultValues: {
             category: '',
             imageSrc: '',
-            title: '',
+            //title: '',
             description: '',
+            description2: '',	
             email: '',
             phone_number: '',
             company_name: '',
@@ -271,19 +272,19 @@ const ServiceModel = () => {
             <div className="flex flex-col gap-8">
                 <Heading
                     title="How would you describe your Service"
-                    subtitle="What jobs do you do"
+                    subtitle="Tell clients about your service"
                 />
                 <Input
-                    id="title"
-                    label="Title"
+                    id="description"
+                    label="Paragraph 1"
                     disabled={isLoading}
                     register={register}
                     errors={errors}
                     required
                 />
                 <Input
-                    id="description"
-                    label="Description"
+                    id="description2"
+                    label="Paragraph 2"
                     disabled={isLoading}
                     register={register}
                     errors={errors}
