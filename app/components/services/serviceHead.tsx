@@ -2,11 +2,11 @@
 
 import { SafeUser } from "@/app/types";
 import Heading from "../heading";
-import prisma from "@/app/libs/prismadb";
 import Image from "next/image";
 import HeartButton from "../heartButton";
 import ImageUpload from "../Inputs/imageUpload";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ServiceHeadProps {
     title: string;
@@ -27,6 +27,7 @@ const ServiceHead: React.FC<ServiceHeadProps> = ({
     city,
     county,
 }) => {
+    const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [image, setImage] = useState(imageSrc);
 
@@ -45,13 +46,13 @@ const ServiceHead: React.FC<ServiceHeadProps> = ({
             }
     
             const data = await response.json();
-            setImage(data.imageSrc); // Update the state with the new image URL
-            setIsEditing(false); // Close the editor
+            setImage(data.imageSrc);
+            setIsEditing(false);
+            router.refresh();
         } catch (error) {
             console.error("Error updating image:", error);
         }
     };
-    
 
     return (
         <>
@@ -61,13 +62,30 @@ const ServiceHead: React.FC<ServiceHeadProps> = ({
                 <div className="absolute top-5 right-5">
                     <HeartButton listingId={id} currentUser={currentUser} />
                 </div>
-                <div className="absolute bottom-5 right-5 text-red-700">
-                    {!isEditing ? (
-                        <button onClick={() => setIsEditing(true)}>Change Photo</button>
-                    ) : (
+                {isEditing ? (
+                    <div className="absolute bottom-5 right-5 bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
                         <ImageUpload value={image} onChange={handleImageChange} />
-                    )}
-                </div>
+                        <button
+                            className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition ml-2"
+                            onClick={() => handleImageChange(image)}
+                        >
+                            Save
+                        </button>
+                        <button
+                            className="bg-gray-500 text-white px-4 py-2 rounded shadow-md hover:bg-gray-600 transition ml-2"
+                            onClick={() => setIsEditing(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                ) : (
+                    <button
+                        className="absolute bottom-5 right-5 bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition"
+                        onClick={() => setIsEditing(true)}
+                    >
+                        Edit Photo
+                    </button>
+                )}
             </div>
         </>
     );

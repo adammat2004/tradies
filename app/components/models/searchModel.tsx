@@ -71,7 +71,7 @@ const SearchModel = () => {
                 register={register}
                 errors={errors}
                 required={false}
-                options={['Plumber', 'Electrician', 'Carpenter', 'Painter', 'Landscaping', 'Paving']}
+                options={['Plumber', 'Electrician', 'Carpenter', 'Painter', 'Landscaping', 'Paving', 'Bricklayer', 'Haulage', 'Roofer']}
             />
             <SearchInput
                 id="county"
@@ -80,7 +80,11 @@ const SearchModel = () => {
                 register={register}
                 errors={errors}
                 required={false}
-                options={['Dublin', 'Cork', 'Galway', 'Limerick', 'Waterford', 'Kilkenny', 'Meath']}
+                options={["Antrim", "Armagh", "Carlow", "Cavan", "Clare", "Cork", "Derry", "Donegal", 
+                    "Down", "Dublin", "Fermanagh", "Galway", "Kerry", "Kildare", "Kilkenny", 
+                    "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", 
+                    "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", 
+                    "Waterford", "Westmeath", "Wexford", "Wicklow"]}
             />
         </div>
     )
