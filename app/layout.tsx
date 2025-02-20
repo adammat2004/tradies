@@ -22,8 +22,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Tradies",
-  description: "tradies.com",
+  title: {
+    default: "Tradeez",
+    template: "%s Find a tradesman near you!"
+  },
+  description: "Find a trademan near you!",
 };
 
 export default async function RootLayout({
@@ -34,6 +37,9 @@ export default async function RootLayout({
   const currentUser = await getCurrentUser();
   return (
     <html lang="en">
+      <head>
+        	<link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
