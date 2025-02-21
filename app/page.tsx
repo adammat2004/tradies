@@ -11,6 +11,32 @@ interface HomeProps{
   searchParams: IListingsParams
 }
 
+export async function generateMetadata({ searchParams }: HomeProps) {
+  const { category, county } = searchParams;
+
+  let title = "Irelands best tradesmen - Tradeez";
+  let description = "Find tradesmen to suit your needs.";
+
+  // Modify the title and description based on the searchParams
+  if (category) {
+    title = `${category} on tradeez - Tradeez`;
+    description = `Browse the best ${category} in Ireland.`;
+  }
+  if (county) {
+    title = `Tradesmen in ${county} - Tradeez`;
+    description = `Explore tradesmen available in the ${county}.`;
+  }
+  if (category && county) {
+    title = `${category} in ${county} - Tradeez`;
+    description = `Find ${category} located in ${county}.`;
+  }
+
+  return {
+    title,
+    description,
+  };
+}
+
 const Home = async ({ searchParams }: HomeProps) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
