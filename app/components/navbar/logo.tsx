@@ -8,13 +8,6 @@ const Logo = () => {
 
     return (
         <div onClick={() => (router.push('/'))} className="text-5xl hover:cursor-pointer"><h1 className="font-serif">Tradeez</h1></div>
-        /*<Image 
-        onClick={() => router.push('/')}
-        alt='Tradies'
-        className="hidden md:block cursor-pointer"
-        height='100'
-        width='100'
-        src='/images/logo.png'/>*/
     )
 }
 
