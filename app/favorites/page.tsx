@@ -1,10 +1,13 @@
-
+import { Metadata } from "next";
 import EmptyState from "../components/emptyState";
 import getCurrentUser from "../actions/getCurrentUser";
 import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./favoriteClient";
 import { Suspense } from "react";
 
+export const metadata: Metadata = {
+    title: "Your Favorite Tradesmen",
+}
 const ListingPage = async () => {
     const listings = await getFavoriteListings();
     const currentUser = await getCurrentUser();

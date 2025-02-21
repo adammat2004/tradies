@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-
+import { Metadata } from "next";
 import { Suspense } from "react";
 import getCurrentUser from "../actions/getCurrentUser";
 import getListings, { IListingsParams } from "../actions/getListings";
@@ -8,6 +8,10 @@ import EmptyState from "../components/emptyState";
 import ServiceCard from "../components/services/serviceCard";
 import prisma from "@/app/libs/prismadb";
 
+export const metadata: Metadata = {
+    title: "Manage your service",
+    description: "Edit your listing"
+}
 const ServicesHome = async () => {
     const currentUser = await getCurrentUser();
     if(!currentUser){

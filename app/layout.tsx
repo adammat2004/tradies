@@ -24,7 +24,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: {
     default: "Tradeez",
-    template: "%s Find a tradesman near you!"
+    template: "%s - Tradeez"
   },
   description: "Find a trademan near you!",
 };

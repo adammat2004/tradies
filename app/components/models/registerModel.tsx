@@ -38,17 +38,38 @@ const RegisterModel = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
-    axios.post('/api/register', data)
-    .then(() => {
-      registerModel.onClose();
-    }).catch((error) => {
-      toast.error("Something went wrong")
-    }).finally(() => {
-      setIsLoading(false);
-    })
-  }
+
+    try {
+        const res = await axios.post('/api/register', data);
+        if (res.status === 200) {
+            // Auto-login after successful registration
+            const signInResponse = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+                redirect: false, // Prevent full-page reload
+                callbackUrl: "/dashboard", // Redirect after login
+            });
+
+            if (signInResponse?.error) {
+                toast.error("Auto-login failed. Please log in manually.");
+            } else {
+                toast.success("Logged in!");
+                registerModel.onClose();
+                loginModel.onClose();
+            }
+        } else {
+            toast.error(res.data.error || "Registration failed");
+        }
+    } catch (error) {
+        toast.error("Something went wrong");
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
+
 
   const toggle = useCallback(() => {
     loginModel.onOpen();
