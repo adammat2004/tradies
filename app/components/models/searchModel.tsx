@@ -24,7 +24,8 @@ const SearchModel = () => {
         formState: {
             errors,
         },
-        reset
+        reset,
+        control
     } = useForm<FieldValues>({
         defaultValues: {
             category: '',
@@ -72,6 +73,7 @@ const SearchModel = () => {
                 errors={errors}
                 required={false}
                 options={['Plumber', 'Electrician', 'Carpenter', 'Painter', 'Landscaping', 'Paving', 'Bricklayer', 'Haulage', 'Roofer']}
+                control={control}
             />
             <SearchInput
                 id="county"
@@ -85,6 +87,7 @@ const SearchModel = () => {
                     "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", 
                     "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", 
                     "Waterford", "Westmeath", "Wexford", "Wicklow"]}
+                control={control}
             />
         </div>
     )

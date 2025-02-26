@@ -40,7 +40,8 @@ const ServiceModel = () => {
         formState: {
             errors,
         },
-        reset
+        reset,
+        control
     } = useForm<FieldValues>({
         defaultValues: {
             category: '',
@@ -216,7 +217,14 @@ const ServiceModel = () => {
                     register={register}
                     errors={errors}
                     required
-                    options={['Dublin', 'Cork', 'Galway', 'Limerick', 'Waterford', 'Kilkenny']}
+                    options={[
+                        'Antrim', 'Armagh', 'Carlow', 'Cavan', 'Clare', 'Cork', 'Derry', 'Donegal', 
+                        'Down', 'Dublin', 'Fermanagh', 'Galway', 'Kerry', 'Kildare', 'Kilkenny', 
+                        'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth', 'Mayo', 'Meath', 
+                        'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary', 'Tyrone', 
+                        'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
+                    ]}
+                    control={control}        
                 />
                 <SearchInput 
                     id="country"
@@ -226,6 +234,7 @@ const ServiceModel = () => {
                     errors={errors}
                     required
                     options={['Ireland']}
+                    control={control}
                 />
                 {/*<CountrySelect 
                     value={location}
