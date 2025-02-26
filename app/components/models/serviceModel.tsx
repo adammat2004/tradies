@@ -16,19 +16,20 @@ import { loadStripe } from "@stripe/stripe-js";
 import SearchInput from "../Inputs/searchInput";
 
 enum STEPS {
-    CATEGORY = 0,
-    LOCATION = 1,
-    INFO = 2,
-    IMAGES = 3,
-    DESCRIPTION = 4,
-    PAY = 5
+    OPENING = 0,
+    CATEGORY = 1,
+    LOCATION = 2,
+    INFO = 3,
+    IMAGES = 4,
+    DESCRIPTION = 5,
+    PAY = 6
 }
 
 const ServiceModel = () => {
     const router = useRouter();
     const serviceModel = useServiceModel();
 
-    const [step ,setStep] = useState(STEPS.CATEGORY);
+    const [step ,setStep] = useState(STEPS.OPENING);
     const [isLoading, setIsLoading] = useState(false);
 
     const {
@@ -105,7 +106,7 @@ const ServiceModel = () => {
             toast.success("Listing created!");
             router.refresh();
             reset();
-            setStep(STEPS.CATEGORY);
+            setStep(STEPS.OPENING);
             serviceModel.onClose();
         })
         .catch((error) => {
@@ -128,7 +129,7 @@ const ServiceModel = () => {
     }, [step])
 
     const secondaryActionLabel = useMemo(() => {
-        if(step == STEPS.CATEGORY){
+        if(step == STEPS.OPENING){
             return undefined;
         }
         return 'Back';
@@ -137,23 +138,45 @@ const ServiceModel = () => {
     let bodyContent = (
         <div className="flex flex-col gap-8">
             <Heading
+                title="List your service!"
+                subtitle="Get noticed online and attract more clients with ease"
+            />
+            <section>
+                <p className="text-lg text-gray-700">
+                    As a tradesman, showcasing your services online is crucial to growing your business. For just <strong>€10 a month</strong>, you can display information about your services, availability, and past projects to potential clients looking for reliable professionals like you.
+                </p>
+            </section>
+            <section>
+                <p className="text-lg text-gray-700">
+                    You can easily update your business details anytime. Whether it's changing your contact information, adding a new service, or updating your portfolio with recent work, everything is fully editable. This way, you're always in control of how your business is presented to clients.
+                </p>
+            </section>
+        </div>
+    );
+
+
+    if(step == STEPS.CATEGORY){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+            <Heading
                 title="Which of these best describes your service?"
                 subtitle="Pick a category"
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
-                {categories.map((item) => (
-                    <div key={item.label} className="col-span-1">
-                        <CategoryInput 
-                            onClick={(category) => setCustomValue('category', category)}
-                            selected={category == item.label}
-                            label={item.label}
-                            icon={item.icon}
-                        />
-                    </div>
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
+                    {categories.map((item) => (
+                        <div key={item.label} className="col-span-1">
+                            <CategoryInput 
+                                onClick={(category) => setCustomValue('category', category)}
+                                selected={category == item.label}
+                                label={item.label}
+                                icon={item.icon}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
 
     if(step == STEPS.LOCATION){
         bodyContent = (
@@ -312,7 +335,7 @@ const ServiceModel = () => {
             onSubmit={handleSubmit(onSubmit)}
             actionLabel={actionLabel}
             secondaryActionLabel={secondaryActionLabel}
-            secondaryAction={step == STEPS.CATEGORY ? undefined: onBack}
+            secondaryAction={step == STEPS.OPENING ? undefined: onBack}
             title="List your service!"
             body={bodyContent}
         />
