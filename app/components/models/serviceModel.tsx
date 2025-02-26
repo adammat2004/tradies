@@ -87,7 +87,7 @@ const ServiceModel = () => {
         }
     
         setIsLoading(true);
-        
+        console.log("hello there");
         // Make a POST request to create the listing first
         axios.post('/api/listings', data)
         .then((response) => {
@@ -283,7 +283,7 @@ const ServiceModel = () => {
                     required
                 />
                 <Input
-                    id="description2"
+                    id="title"
                     label="Paragraph 2"
                     disabled={isLoading}
                     register={register}

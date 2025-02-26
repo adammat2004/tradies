@@ -44,6 +44,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
 }) => {
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
+    const [isEditing2, setIsEditing2] = useState(false);
     const [descriptionValue, setDescriptionValue] = useState(description);
     const [titleValue, setTitleValue] = useState(title);
     const handleParagraph1Change = async (value: string) => {
@@ -105,7 +106,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
             </p>
             <div className="flex justify-end mt-4">
             {isEditing ? (
-                <div>
+                <div className="w-full">
                   <InputChange id={"title"} label="Description Paragraph 2" onChange={(e) => setDescriptionValue(e.target.value)}/>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition ml-2"
@@ -133,8 +134,8 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
               {title}
             </p>
             <div className="flex justify-end mt-4">
-              {isEditing ? (
-                <div>
+              {isEditing2 ? (
+                <div className="w-full">
                   <InputChange id={"title"} label="Description Paragraph 2" onChange={(e) => setTitleValue(e.target.value)}/>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition ml-2"
@@ -144,7 +145,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
                   </button>
                   <button
                     className="bg-gray-500 text-white px-4 py-2 rounded shadow-md hover:bg-gray-600 transition ml-2"
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => setIsEditing2(false)}
                   >
                     Cancel
                   </button>
@@ -152,7 +153,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
               ) : (
                 <button
                   className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition"
-                  onClick={() => setIsEditing(true)}
+                  onClick={() => setIsEditing2(true)}
                 >
                   Edit Paragraph 2
                 </button>

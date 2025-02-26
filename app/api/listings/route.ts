@@ -28,10 +28,9 @@ export async function POST(req: Request) {
     } = await req.json();
 
     // Validate required fields
-    if (!category || !title || !email) {
+    if (!category || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
     // Create the temporary listing
     const tempListing = await prisma.tempListing.create({
       data: {
@@ -58,7 +57,7 @@ export async function POST(req: Request) {
     if (!tempListing) {
       return NextResponse.json({ error: 'Failed to create temp listing' }, { status: 500 });
     }
-
+    console.log("tempListingId", tempListingId);
     // Create Stripe session with metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
