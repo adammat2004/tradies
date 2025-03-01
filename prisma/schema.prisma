@@ -63,6 +63,7 @@ model Listing {
   updatedAt    DateTime? @updatedAt
   category     String
   email        String
+  operationCounties String[]
   phone_number String
   company_name String
   street       String
@@ -88,6 +89,7 @@ model TempListing {
   title           String
   description     String
   email           String
+  operationCounties String[]
   phone_number    String
   company_name    String
   street          String

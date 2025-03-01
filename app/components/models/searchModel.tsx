@@ -54,7 +54,6 @@ const SearchModel = () => {
             query: updatedQuery
         }, {skipNull: true});*/}
         const url = `/?${qs.stringify(updatedQuery, { skipNull: true })}`;
-
         searchModel.onClose();
         router.push(url);
     }, [searchModel, county, category, params]);

@@ -14,16 +14,25 @@ import toast from "react-hot-toast";
 import { redirect, useRouter } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import SearchInput from "../Inputs/searchInput";
+import Select from "react-select";
 
 enum STEPS {
     OPENING = 0,
     CATEGORY = 1,
-    LOCATION = 2,
-    INFO = 3,
-    IMAGES = 4,
-    DESCRIPTION = 5,
-    PAY = 6
+    WORKAREA = 2,
+    LOCATION = 3,
+    INFO = 4,
+    IMAGES = 5,
+    DESCRIPTION = 6,
+    PAY = 7
 }
+
+const counties = [
+    'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
+    'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth',
+    'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary',
+    'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
+].map((county) => ({label: county, value: county}));
 
 const ServiceModel = () => {
     const router = useRouter();
@@ -56,7 +65,8 @@ const ServiceModel = () => {
             town: '',
             city: '',
             county: '',
-            country: ''
+            country: '',
+            operationCounties: []
         }
     });
 
@@ -179,6 +189,27 @@ const ServiceModel = () => {
         )
     }
 
+    if(step == STEPS.WORKAREA){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                    title="What counties do you work in?"
+                    subtitle="Select all that apply"
+                />
+                <Select
+                        id="operationCounties"
+                        name="operationCounties"
+                        isMulti
+                        options={counties}
+                        onChange={(selectedOptions) => setValue('operationCounties', selectedOptions.map(option => option.value))}
+                        getOptionLabel={(e) => e.label}
+                        getOptionValue={(e) => e.value}
+                />
+                {errors.operationCounties && <span className="text-red-500 mt-2">This field is required</span>}
+            </div>
+        )
+    }
+
     if(step == STEPS.LOCATION){
         bodyContent = (
             <div className="flex flex-col gap-8">
@@ -210,23 +241,20 @@ const ServiceModel = () => {
                     errors={errors}
                     required
                 />
-                <SearchInput 
+                <SearchInput
                     id="county"
                     label="County"
                     disabled={isLoading}
                     register={register}
                     errors={errors}
                     required
-                    options={[
-                        'Antrim', 'Armagh', 'Carlow', 'Cavan', 'Clare', 'Cork', 'Derry', 'Donegal', 
-                        'Down', 'Dublin', 'Fermanagh', 'Galway', 'Kerry', 'Kildare', 'Kilkenny', 
-                        'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth', 'Mayo', 'Meath', 
-                        'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary', 'Tyrone', 
-                        'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
-                    ]}
+                    options={['Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
+                                'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth',
+                                'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary',
+                                'Waterford', 'Westmeath', 'Wexford', 'Wicklow']}
                     control={control}        
                 />
-                <SearchInput 
+                <SearchInput
                     id="country"
                     label="Country"
                     disabled={isLoading}

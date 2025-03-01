@@ -39,7 +39,6 @@ export async function POST(req: Request) {
       console.log("session2id", session.id);
       // Extract metadata from the session
       const { tempListingId, userId } = session.metadata || {};
-      console.log('Metadata extracted:', { tempListingId, userId });
 
       if (!tempListingId || !sessionId || !userId) {
         throw new Error('Required metadata is missing from the Stripe session.');
@@ -89,10 +88,9 @@ export async function POST(req: Request) {
           plan: plan, // Use the determined plan
           isActive: true, // Mark the listing as active
           userId: tempListing.userId,
+          operationCounties: tempListing.operationCounties,
         },
       });
-
-      console.log('New listing created:', newListing);
 
       // Delete the temporary listing after converting
       await prisma.tempListing.delete({

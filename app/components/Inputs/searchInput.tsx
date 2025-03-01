@@ -37,9 +37,11 @@ const SearchInput: React.FC<InputProps> = ({
           render={({ field }) => (
             <Select
               {...field}
+              value={options ? options.map((option) => ({ value: option, label: option })).find(option => option.value === field.value) : null}
               options={options.map((option) => ({ value: option, label: option }))}
               isDisabled={disabled}
               classNamePrefix="react-select"
+              onChange={(selectedOption) => field.onChange(selectedOption ? selectedOption.value : null)}
               styles={{
                 control: (provided) => ({
                   ...provided,

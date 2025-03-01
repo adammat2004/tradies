@@ -15,14 +15,10 @@ export default async function getListings(
             category,
             county
         } = params;
-        let isActive = true;
         let query: any = {};
 
         if(userId){
             query.userId;
-        }
-        if(isActive){
-            query.isActive = isActive;
         }
 
         if(category){
@@ -30,7 +26,9 @@ export default async function getListings(
         }
 
         if(county){
-            query.county = county;
+            query.operationCounties = {
+                has: county, // Prisma's `has` filter checks if the array contains the value
+            };
         }
 
         const listings = await prisma.listing.findMany({

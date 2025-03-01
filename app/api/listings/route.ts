@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       email,
       phone_number,
       company_name,
+      operationCounties,
       street,
       town,
       city,
@@ -26,9 +27,10 @@ export async function POST(req: Request) {
       country,
       plan,
     } = await req.json();
-
     // Validate required fields
-    if (!category || !email) {
+    console.log("county", county);
+    console.log("country", country);
+    if (!category || !email || !operationCounties || !title || !description || !phone_number || !company_name || !street || !town || !city || !county || !country) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
     // Create the temporary listing
@@ -45,6 +47,7 @@ export async function POST(req: Request) {
         town,
         city,
         county,
+        operationCounties,
         country,
         plan: 'premium',
         isActive: false,
@@ -57,7 +60,7 @@ export async function POST(req: Request) {
     if (!tempListing) {
       return NextResponse.json({ error: 'Failed to create temp listing' }, { status: 500 });
     }
-    console.log("tempListingId", tempListingId);
+    console.log("tempListingI", tempListing);
     // Create Stripe session with metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
