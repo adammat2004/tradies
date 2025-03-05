@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React, { Suspense } from 'react';
 import getJobs, {JobListingParams} from '../actions/getJobs';
 import getCurrentUser from '../actions/getCurrentUser';
