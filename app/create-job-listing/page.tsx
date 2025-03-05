@@ -1,0 +1,250 @@
+'use client';
+
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+
+const JobCreationPage = () => {
+  const router = useRouter();
+  const [loading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // State for storing list of requirements and benefits
+  const [requirementsList, setRequirementsList] = useState<string[]>([]);
+  const [benefitsList, setBenefitsList] = useState<string[]>([]);
+
+  const [requirementInput, setRequirementInput] = useState('');
+  const [benefitInput, setBenefitInput] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get('/api/get-current-user');
+        if (!data) {
+          return;
+        } else {
+          setCurrentUser(data);
+        }
+      } catch (error) {
+        toast.error('Error fetching user');
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<FieldValues>({
+    defaultValues: {
+      category: '',
+      jobTitle: '',
+      companyName: '',
+      location: '',
+      salary: '',
+      jobType: '',
+      description: '',
+      contactInfo: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    setIsLoading(true); // Set loading state to true before submitting
+
+    // Add requirements and benefits from their lists
+    const jobData = {
+      ...data,
+      requirements: requirementsList,
+      benefits: benefitsList,
+    };
+
+    try {
+      const response = await axios.post('/api/create-job', jobData); // Make the POST request
+
+      if (response.data.error) {
+        toast.error(response.data.error); // Show error toast if there’s an error
+      } else {
+        toast.success('Job created successfully'); // Show success toast
+        router.push('/'); // Redirect to home page or another relevant page
+      }
+    } catch (error) {
+      console.error('Error submitting the job:', error);
+      toast.error('Something went wrong. Please try again later.'); // Show error toast if there's an issue with the request
+    } finally {
+      setIsLoading(false); // Set loading state to false after the request completes (whether successful or not)
+    }
+  };
+
+  // Add requirement to the list
+  const handleAddRequirement = () => {
+    if (requirementInput.trim()) {
+      setRequirementsList([...requirementsList, requirementInput.trim()]);
+      setRequirementInput(''); // Clear input field after adding
+    }
+  };
+
+  // Add benefit to the list
+  const handleAddBenefit = () => {
+    if (benefitInput.trim()) {
+      setBenefitsList([...benefitsList, benefitInput.trim()]);
+      setBenefitInput(''); // Clear input field after adding
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">List a New Job</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Category</label>
+          <input
+            type="text"
+            {...register('category', { required: 'Category is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Job Title */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Job Title</label>
+          <input
+            type="text"
+            {...register('jobTitle', { required: 'Job title is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Company Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Company Name</label>
+          <input
+            type="text"
+            {...register('companyName', { required: 'Company name is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Location */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Location</label>
+          <input
+            type="text"
+            {...register('location', { required: 'Location is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Salary */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Salary</label>
+          <input
+            type="number"
+            {...register('salary', { required: 'Salary is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Job Type */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Job Type</label>
+          <input
+            type="text"
+            {...register('jobType', { required: 'Job type is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Requirements */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Requirements</label>
+          <input
+            type="text"
+            value={requirementInput}
+            onChange={(e) => setRequirementInput(e.target.value)}
+            placeholder="Add a requirement"
+            className="mt-1 p-2 w-full border rounded"
+          />
+          <button
+            type="button"
+            onClick={handleAddRequirement}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Add Requirement
+          </button>
+          <ul className="mt-2">
+            {requirementsList.map((req, index) => (
+              <li key={index} className="text-sm text-gray-700">
+                {req}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <textarea
+            {...register('description', { required: 'Description is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          ></textarea>
+        </div>
+
+        {/* Benefits */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Benefits</label>
+          <input
+            type="text"
+            value={benefitInput}
+            onChange={(e) => setBenefitInput(e.target.value)}
+            placeholder="Add a benefit"
+            className="mt-1 p-2 w-full border rounded"
+          />
+          <button
+            type="button"
+            onClick={handleAddBenefit}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Add Benefit
+          </button>
+          <ul className="mt-2">
+            {benefitsList.map((benefit, index) => (
+              <li key={index} className="text-sm text-gray-700">
+                {benefit}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Contact Info */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Contact Info</label>
+          <input
+            type="text"
+            {...register('contactInfo', { required: 'Contact info is required' })}
+            className="mt-1 p-2 w-full border rounded"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div>
+          <button
+            type="submit"
+            className={`mt-4 px-6 py-2 bg-blue-500 text-white rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Submitting...' : 'Submit Job'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default JobCreationPage;

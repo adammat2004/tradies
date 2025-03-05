@@ -37,9 +37,9 @@ const ServicesHome = async () => {
     if(listings.length === 0){
     return (
         <Suspense fallback={<div>Loading...</div>}>
-        <EmptyState
-            showReset
-        />
+            <EmptyState
+                showReset
+            />
         </Suspense>
     )
     }

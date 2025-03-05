@@ -188,6 +188,23 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>
     </div>
 
+    <div className="relative p-4">
+      <h1 className="text-2xl">My job listings</h1>
+      <div className="flex flex-row">
+        <ul>
+        <li>Job 1</li>
+        <li>Job 2</li>
+        <li>Job 3</li>
+      </ul>
+      </div>
+      <div className="absolute bottom-4 right-4">
+        <button onClick={() => router.push('/create-job-listing')} className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
+          Add job listing
+        </button>
+      </div>  
+    </div>
+
+
     <div className="flex flex-col w-full mt-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

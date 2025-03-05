@@ -92,14 +92,13 @@ const ServiceModel = () => {
         setStep((value) => value + 1);
     }
 
-    const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         // If the current step isn't the payment step, just go to the next step
         if (step !== STEPS.PAY) {
             return onNext();
         }
     
         setIsLoading(true);
-        console.log("hello there");
         // Make a POST request to create the listing first
         axios.post('/api/listings', data)
         .then((response) => {
