@@ -9,6 +9,7 @@ import getCurrentUser from "./actions/getCurrentUser";
 import ServiceModel from "./components/models/serviceModel";
 import SearchModel from "./components/models/searchModel";
 import { Suspense } from "react";
+import JobSearchModel from "./components/models/jobSearchModel";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,6 +45,7 @@ export default async function RootLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <ServiceModel />
           <SearchModel />
+          <JobSearchModel />
         </Suspense>
         <LoginModel />
         <RegisterModel />

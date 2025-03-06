@@ -5,6 +5,7 @@ export interface JobListingParams {
     userId?: string;
     category?: string;
     county?: string;
+    jobType?: string;
 }
 
 export default async function getJobs(
@@ -14,9 +15,11 @@ export default async function getJobs(
         const {
             userId,
             category,
-            county
+            county,
+            jobType
         } = params;
         let query: any = {};
+        console.log(category)
 
         if(userId){
             query.userId;
@@ -27,7 +30,11 @@ export default async function getJobs(
         }
 
         if(county){
-            query.county = county;
+            query.location = county;
+        }
+
+        if(jobType){
+            query.jobType = jobType
         }
 
         const listings = await prisma.job.findMany({

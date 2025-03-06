@@ -6,6 +6,7 @@ import getCurrentUser from '../actions/getCurrentUser';
 import EmptyState from '../components/emptyState';
 import Container from '../components/container';
 import JobCard from '../components/jobCard';
+import JobSearch from '../components/jobSearch';
 
 interface JobProps {
   searchParams: JobListingParams
@@ -13,6 +14,7 @@ interface JobProps {
 
 const jobPage = async ({searchParams}: JobProps) => {
   const jobListings = await getJobs(searchParams);
+  //console.log("job listings", jobListings);
   const currentUser = await getCurrentUser();
 
   if(jobListings.length === 0){
@@ -27,16 +29,19 @@ const jobPage = async ({searchParams}: JobProps) => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Container>
-        <div className="flex flex-col space-y-4">
-          {jobListings.map((job) => {
-            return (
-              <JobCard
-                currentUser={currentUser} 
-                job={job}
-                key={job.id}
-              />
-            )
-          })}
+        <JobSearch />
+        <div className='pt-8'>
+          <div className="flex flex-col space-y-4">
+            {jobListings.map((job) => {
+              return (
+                <JobCard
+                  currentUser={currentUser} 
+                  job={job}
+                  key={job.id}
+                />
+              )
+            })}
+          </div>
         </div>
       </Container>
     </Suspense>
