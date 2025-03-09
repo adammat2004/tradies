@@ -3,11 +3,10 @@
 import { SafeUser } from "@/app/types"
 import React from "react";
 import { IconType } from "react-icons";
-import { useState } from "react";
-import Input from "../Inputs/input";
-import { RegisterOptions, FieldValues, UseFormRegisterReturn, set } from "react-hook-form";
+import { useState, useEffect } from "react";
 import InputChange from "../Inputs/inputChange";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface ServiceInfoProps {
     user: SafeUser;
@@ -28,6 +27,23 @@ interface ServiceInfoProps {
     } | undefined;
 }
 
+interface JobListing {
+  id: string;             
+  jobTitle: string;
+  category: string;
+  companyName: string;
+  location: string;
+  salary: string | undefined | null;
+  jobType: string;
+  requirements: string[];
+  description: string;
+  benefits: string[]
+  contactInfo: string
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string; 
+}
+
 const ServiceInfo: React.FC<ServiceInfoProps> = ({
     user,
     description,
@@ -45,10 +61,27 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [isEditing2, setIsEditing2] = useState(false);
+    const [jobListings, setJobListings] = useState<JobListing[]>([]);
     const [descriptionValue, setDescriptionValue] = useState(description);
     const [titleValue, setTitleValue] = useState(title);
+    useEffect(() => {
+      const fetchJobListings = async () => {
+        try{
+          const response = await fetch(`/api/getJobsByUserId?userId=${user.id}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch job listings");
+          }
+          const { data } = await response.json(); // Extracting data properly
+          setJobListings(data);
+        } catch(error){
+          console.error("Fetching job listings error", error);
+        }
+      }
+      fetchJobListings()
+    }, [user.id])
+
     const handleParagraph1Change = async (value: string) => {
-        try {
+      try {
             const response = await fetch("/api/changeDescription", {
                 method: "POST",
                 headers: {
@@ -82,16 +115,35 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
             if (!response.ok) {
                 throw new Error("Failed to update description");
             }
-            console.log("hello");
             const data = await response.json();
-            console.log(data);
-            console.log(titleValue);
             setTitleValue(data.description); // Update the state with the new description
             setIsEditing(false); // Close the editor
             router.refresh();
         } catch (error) {
             console.error("Error updating description:", error);
         }
+    }
+
+    const handleJobListingDelete = async (id: string) => {
+      try {
+        const response = await fetch(`/api/deleteJobListing?id=${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if(!response.ok){
+          throw new Error("Failed to delete jobLising");
+        }
+        setJobListings((prevJobListings) => 
+          prevJobListings.filter((job) => job.id !== id)
+        );
+
+        return toast.success("Job Listing Deleted!");
+
+      } catch (error) {
+          return console.error("Error deleting job listing", error);
+      }
     }
 
     
@@ -188,14 +240,24 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>
     </div>
 
-    <div className="relative p-4">
-      <h1 className="text-2xl">My job listings</h1>
+    <div className="relative">
+      <h1 className="text-gray-900 text-3xl font-bold mb-4">My job listings</h1>
       <div className="flex flex-row">
-        <ul>
-        <li>Job 1</li>
-        <li>Job 2</li>
-        <li>Job 3</li>
-      </ul>
+        <ul className="list-none p-0">
+          {jobListings.map((job) => {
+            return (
+              <li key={job.id} className="relative pb-4 text-base text-gray-700">
+                <div className="text-gray-800 text-xl">{job.jobTitle}</div>
+                <p>{job.description}</p>
+                <div className="">
+                  <button onClick={() => handleJobListingDelete(job.id)} className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
+                    Delete
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
       <div className="absolute bottom-4 right-4">
         <button onClick={() => router.push('/create-job-listing')} className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
