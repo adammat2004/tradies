@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import InputChange from "../Inputs/inputChange";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import PostCard from "../postCard";
 
 interface ServiceInfoProps {
     user: SafeUser;
@@ -44,6 +45,15 @@ interface JobListing {
   userId: string; 
 }
 
+interface Posts {
+  id: string;
+  userId: string;
+  comment: string;
+  pictures: string[];
+  listingId: string;
+  createdAt: Date;
+}
+
 const ServiceInfo: React.FC<ServiceInfoProps> = ({
     user,
     description,
@@ -64,6 +74,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
     const [jobListings, setJobListings] = useState<JobListing[]>([]);
     const [descriptionValue, setDescriptionValue] = useState(description);
     const [titleValue, setTitleValue] = useState(title);
+    const [posts, setPosts] = useState<Posts[]>([]);
     useEffect(() => {
       const fetchJobListings = async () => {
         try{
@@ -79,6 +90,22 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       }
       fetchJobListings()
     }, [user.id])
+
+    useEffect(() => {
+      const fetchPosts = async () => {
+        try{
+          const response = await fetch(`/api/getPostsByListingId?listingId=${id}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch posts");
+          }
+          const { data } = await response.json(); // Extracting data properly
+          setPosts(data);
+        } catch(error){
+          console.error("Fetching posts error", error);
+        }
+      }
+      fetchPosts()
+    }, [id])
 
     const handleParagraph1Change = async (value: string) => {
       try {
@@ -240,30 +267,58 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>
     </div>
 
-    <div className="relative">
-      <h1 className="text-gray-900 text-3xl font-bold mb-4">My job listings</h1>
-      <div className="flex flex-row">
-        <ul className="list-none p-0">
-          {jobListings.map((job) => {
-            return (
-              <li key={job.id} className="relative pb-4 text-base text-gray-700">
-                <div className="text-gray-800 text-xl">{job.jobTitle}</div>
-                <p>{job.description}</p>
-                <div className="">
-                  <button onClick={() => handleJobListingDelete(job.id)} className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
-                    Delete
-                  </button>
-                </div>
-              </li>
-            );
-          })}
+    <div className="relative bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl mx-auto">
+      <h1 className="text-gray-900 text-3xl font-bold mb-6 text-center border-b pb-4">My Job Listings</h1>
+      <div className="space-y-6">
+          <ul className="list-none p-0 divide-y divide-gray-200">
+              {jobListings.map((job) => (
+                  <li key={job.id} className="py-4">
+                      <div className="flex justify-between items-center">
+                          <div>
+                              <h2 className="text-gray-800 text-xl font-semibold">{job.jobTitle}</h2>
+                              <p className="text-gray-600 text-sm mt-1">{job.description}</p>
+                          </div>
+                          <button 
+                              onClick={() => handleJobListingDelete(job.id)} 
+                              className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition"
+                          >
+                              Delete
+                          </button>
+                      </div>
+                  </li>
+              ))}
+          </ul>
+      </div>
+      <div className="flex justify-end mt-6">
+          <button 
+              onClick={() => router.push('/create-job-listing')} 
+              className="bg-red-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-600 transition"
+          >
+              Add Job Listing
+          </button>
+      </div>  
+  </div>
+
+
+    <div>
+      <h1 className="text-gray-900 text-3xl font-bold mb-4">My Posts</h1>
+      <div>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <PostCard 
+                id={post.id}
+                comment={post.comment}
+                createdAt={post.createdAt}
+                images={post.pictures}
+              />
+            </li>
+          ))}
         </ul>
       </div>
-      <div className="absolute bottom-4 right-4">
-        <button onClick={() => router.push('/create-job-listing')} className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-600 transition">
-          Add job listing
-        </button>
-      </div>  
+      <div>
+        <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition" onClick={() => router.push(`/create-post/${id}`)}>Add Post</button>
+      </div>
     </div>
 
 

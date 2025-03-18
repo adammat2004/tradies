@@ -30,6 +30,7 @@
     "react-leaflet": "^4.2.1",
     "react-select": "^5.10.0",
     "stripe": "^17.4.0",
+    "swiper": "^11.2.5",
     "world-countries": "^5.0.0",
     "zustand": "^5.0.1"
   },
