@@ -101,24 +101,26 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
                 </div>
             </div>
 
-            {/* Posts Section */}
-            <div className="relative min-h-screen p-6 flex flex-col">
-                <h1 className="text-gray-900 text-3xl font-bold mb-6">Posts</h1>
-                <div className="relative flex flex-col flex-grow">
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {posts.map((post) => (
-                            <li key={post.id}>
-                                <PostCard 
-                                    id={post.id}
-                                    comment={post.comment}
-                                    createdAt={post.createdAt}
-                                    images={post.pictures}
-                                />
-                            </li>
-                        ))}
-                    </ul>
+            {/* Posts Section - Only Render if There Are Posts */}
+            {posts.length > 0 && (
+                <div className="relative min-h-screen p-6 flex flex-col">
+                    <h1 className="text-gray-900 text-3xl font-bold mb-6">Posts</h1>
+                    <div className="relative flex flex-col flex-grow">
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {posts.map((post) => (
+                                <li key={post.id}>
+                                    <PostCard 
+                                        id={post.id}
+                                        comment={post.comment}
+                                        createdAt={post.createdAt}
+                                        images={post.pictures}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Contact Section */}
             <div className="flex flex-col w-full mt-12">
