@@ -299,27 +299,35 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>  
   </div>
 
+  <div className="relative min-h-screen p-6 flex flex-col">
+    <h1 className="text-gray-900 text-3xl font-bold mb-6">My Posts</h1>
 
-    <div>
-      <h1 className="text-gray-900 text-3xl font-bold mb-4">My Posts</h1>
-      <div>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id}>
-              <PostCard 
-                id={post.id}
-                comment={post.comment}
-                createdAt={post.createdAt}
-                images={post.pictures}
-              />
-            </li>
-          ))}
+    {/* Container for Posts with Relative Positioning */}
+    <div className="relative flex flex-col flex-grow">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {posts.map((post) => (
+                <li key={post.id}>
+                    <PostCard 
+                        id={post.id}
+                        comment={post.comment}
+                        createdAt={post.createdAt}
+                        images={post.pictures}
+                    />
+                </li>
+            ))}
         </ul>
-      </div>
-      <div>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition" onClick={() => router.push(`/create-post/${id}`)}>Add Post</button>
-      </div>
+
+        {/* Add Post Button - Positioned Bottom Right of this Container */}
+        <div className="flex justify-end mt-6">
+            <button 
+                className="bg-red-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105"
+                onClick={() => router.push(`/create-post/${id}`)}
+            >
+                Add Post
+            </button>
+        </div>
     </div>
+  </div>
 
 
     <div className="flex flex-col w-full mt-12">
