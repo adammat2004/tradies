@@ -24,7 +24,7 @@ const ListingsJobCard: React.FC<ListingsJobCardProps> = ({
       <p className="text-sm text-gray-600 mb-4">{jobType}</p>
       {salary && <p className="text-lg font-medium text-green-600">${salary}</p>}
       <p className="text-gray-700 text-sm mt-2 line-clamp-3">{description}</p>
-      <button onClick={() => router.push(`jobs/${id}`)} className="mt-4 w-full bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 transition-all">
+      <button onClick={() => router.push(`/jobs/${id}`)} className="mt-4 w-full bg-rose-500 text-white py-2 px-4 rounded-lg hover:bg-rose-600 transition-all">
         View Details
       </button>
     </div>
