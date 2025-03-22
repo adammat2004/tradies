@@ -85,6 +85,7 @@ export async function POST(req: Request) {
           city: tempListing.city,
           county: tempListing.county,
           country: tempListing.country,
+          is_business: tempListing.is_business,
           plan: plan, // Use the determined plan
           isActive: true, // Mark the listing as active
           userId: tempListing.userId,

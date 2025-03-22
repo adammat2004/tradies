@@ -22,7 +22,9 @@ export default async function getListings(
         }
 
         if(category){
-            query.category = category;
+            query.category = {
+                has: category,
+            }
         }
 
         if(county){

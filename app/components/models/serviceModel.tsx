@@ -18,21 +18,23 @@ import Select from "react-select";
 
 enum STEPS {
     OPENING = 0,
-    CATEGORY = 1,
-    WORKAREA = 2,
-    LOCATION = 3,
-    INFO = 4,
-    IMAGES = 5,
-    DESCRIPTION = 6,
-    PAY = 7
+    BUSINESSTYPE = 1,
+    CATEGORY = 2,
+    WORKAREA = 3,
+    LOCATION = 4,
+    INFO = 5,
+    IMAGES = 6,
+    DESCRIPTION = 7,
+    PAY = 8
 }
 
 const counties = [
-    'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
-    'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth',
-    'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary',
-    'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
+    'Antrim', 'Armagh', 'Carlow', 'Cavan', 'Clare', 'Cork', 'Derry', 'Donegal', 
+    'Down', 'Dublin', 'Fermanagh', 'Galway', 'Kerry', 'Kildare', 'Kilkenny', 'Laois', 
+    'Leitrim', 'Limerick', 'Longford', 'Louth', 'Mayo', 'Meath', 'Monaghan', 'Offaly', 
+    'Roscommon', 'Sligo', 'Tyrone', 'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
 ].map((county) => ({label: county, value: county}));
+
 
 const ServiceModel = () => {
     const router = useRouter();
@@ -53,9 +55,9 @@ const ServiceModel = () => {
         control
     } = useForm<FieldValues>({
         defaultValues: {
-            category: '',
+            category: [],
             imageSrc: '',
-            //title: '',
+            is_business: true,
             description: '',
             description2: '',	
             email: '',
@@ -74,6 +76,7 @@ const ServiceModel = () => {
 
     const category = watch('category');
     const imageSrc  = watch('imageSrc');
+    const is_business = watch('is_business');
 
 
     const setCustomValue = (id: string, value: any) => {
@@ -164,20 +167,60 @@ const ServiceModel = () => {
         </div>
     );
 
-
+    if(step == STEPS.BUSINESSTYPE) {
+        bodyContent = (
+            <div className="flex flex-col items-center gap-6">
+                <Heading 
+                    title="Select listing type"
+                    subtitle="Are you a business or an individual tradesman"
+                />
+                <div className="flex flex-col gap-4 w-full max-w-sm">
+                    <button 
+                        onClick={() => setCustomValue('is_business', true)} 
+                        className={`
+                            ${is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-800 hover:bg-gray-900'} 
+                            hover:bg-rose-600 text-white font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
+                            ${is_business ? 'border-4' : 'border-2'}
+                        `}
+                    >
+                        Business
+                    </button>
+                    <button 
+                        onClick={() => setCustomValue('is_business', false)} 
+                        className={`
+                            ${!is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-600 hover:bg-gray-700'} 
+                            hover:bg-rose-600 text-white font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
+                            ${!is_business ? 'border-4' : 'border-2'}
+                        `}
+                    >
+                        Individual
+                    </button>
+                </div>
+            </div>
+        )
+    }
+    
+    
     if(step == STEPS.CATEGORY){
         bodyContent = (
             <div className="flex flex-col gap-8">
             <Heading
                 title="Which of these best describes your service?"
-                subtitle="Pick a category"
+                subtitle="You can pick multiple categories"
             />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto">
                     {categories.map((item) => (
                         <div key={item.label} className="col-span-1">
-                            <CategoryInput 
-                                onClick={(category) => setCustomValue('category', category)}
-                                selected={category == item.label}
+                            <CategoryInput
+                                 onClick={(cat) => {
+                                    // If the category is already selected, remove it; otherwise, add it
+                                    const currentCategories = watch('category', []);
+                                    const updatedCategories = currentCategories.includes(cat)
+                                        ? currentCategories.filter((categore: any) => categore !== cat)
+                                        : [...currentCategories, cat];
+                                    setCustomValue('category', updatedCategories);
+                                }}
+                                selected={watch('category', []).includes(item.label)}
                                 label={item.label}
                                 icon={item.icon}
                             />
@@ -363,7 +406,6 @@ const ServiceModel = () => {
             </div>
         )
     }
-
     return (
         <Model 
             isOpen={serviceModel.isOpen}

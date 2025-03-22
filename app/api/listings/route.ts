@@ -26,11 +26,10 @@ export async function POST(req: Request) {
       county,
       country,
       plan,
+      is_business
     } = await req.json();
     // Validate required fields
-    console.log("county", county);
-    console.log("country", country);
-    if (!category || !email || !operationCounties || !title || !description || !phone_number || !company_name || !street || !town || !city || !county || !country) {
+    if (!category || !email || !operationCounties || !title || !description || !phone_number || !company_name || !street || !town || !city || !county || !country ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
     // Create the temporary listing
@@ -47,6 +46,7 @@ export async function POST(req: Request) {
         town,
         city,
         county,
+        is_business,
         operationCounties,
         country,
         plan: 'premium',
@@ -60,13 +60,12 @@ export async function POST(req: Request) {
     if (!tempListing) {
       return NextResponse.json({ error: 'Failed to create temp listing' }, { status: 500 });
     }
-    console.log("tempListingI", tempListing);
     // Create Stripe session with metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          price: plan === 'yearly'
+          price: is_business === false
             ? process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
             : process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
           quantity: 1,
@@ -81,7 +80,6 @@ export async function POST(req: Request) {
         tempListingId: tempListingId.toString(),
       },
     });
-    console.log("session1id", session.id);
     // Update the tempListing with the Stripe session ID
     await prisma.tempListing.update({
       where: { id: tempListingId },
