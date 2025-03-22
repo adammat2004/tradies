@@ -19,16 +19,16 @@ export async function generateMetadata({ searchParams }: HomeProps) {
 
   // Modify the title and description based on the searchParams
   if (category) {
-    title = `${category} on tradeez - Tradeez`;
-    description = `Browse the best ${category} in Ireland.`;
+    title = `${category} services - Tradeez`;
+    description = `Browse the best ${category} contractors in Ireland.`;
   }
   if (county) {
     title = `Tradesmen in ${county} - Tradeez`;
-    description = `Explore tradesmen available in the ${county}.`;
+    description = `Find tradesmen available in ${county}.`;
   }
   if (category && county) {
-    title = `${category} in ${county} - Tradeez`;
-    description = `Find ${category} located in ${county}.`;
+    title = `${category} services in ${county} - Tradeez`;
+    description = `Find ${category} services located in ${county}.`;
   }
 
   return {
@@ -53,7 +53,7 @@ const Home = async ({ searchParams }: HomeProps) => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Container>
-        <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8 pl-8">
+        <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8 pl-8 pr-8">
           {listings.map((listing) => {
             return (
               <ListingCard

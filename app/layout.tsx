@@ -23,7 +23,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Tradeez",
+  title: "Construction workers in Ireland - Tradeez",
   description: "Find a trademan near you!",
 };
 

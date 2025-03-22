@@ -15,17 +15,17 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 export const categories = [
     {
-        label: 'Plumber',
+        label: 'Plumbing',
         icon: MdPlumbing,
         description: "Plumbing company"
     },
     {
-        label: 'Carpenter',
+        label: 'Carpentry',
         icon: MdOutlineCarpenter,
         description: "Carpentry company"
     },
     {
-        label: 'Electrician',
+        label: 'Electrical',
         icon: MdOutlineElectricalServices,
         description: "Electrical services company"
     },
@@ -40,22 +40,17 @@ export const categories = [
         description: "Paving company"
     },
     {
-        label: 'Bricklayer',
+        label: 'Bricklaying',
         icon: GiBrickWall,
         description: "Bricklaying company"
     },
     {
-        label: 'Haulage',
-        icon: CiDeliveryTruck,
-        description: "Haulage company"
-    },
-    {
-        label: 'Painter',
+        label: 'Painting',
         icon: GiPaintRoller,
         description: "Painting company"
     },
     {
-        label: 'Roofer',
+        label: 'Roofing',
         icon: MdRoofing,
         description: "Roofing company"
     },

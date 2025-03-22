@@ -12,6 +12,40 @@ interface JobProps {
   searchParams: JobListingParams
 }
 
+export async function generateMetadata({ searchParams }: JobProps) {
+  const { category, county, jobType } = searchParams;
+
+  let title = "Construction jobs in Ireland - Tradeez";
+  let description = "Find construction jobs in Ireland.";
+
+  // Modify the title and description based on the searchParams
+  if (category) {
+    title = `${category} jobs - Tradeez`;
+    description = `Find jobs with the best ${category} contractors in Ireland.`;
+  }
+  if (county) {
+    title = `Tradesmen jobs in ${county} - Tradeez`;
+    description = `Explore tradesmen jobs available in ${county}.`;
+  }
+  if (category && county) {
+    title = `${category} jobs in ${county} - Tradeez`;
+    description = `Find ${category} jobs located in ${county}.`;
+  }
+  if(jobType){
+    title = `${jobType} tradesmen jobs in Ireland`
+    description = `Explore ${jobType} jobs in Ireland`
+  }
+  if(jobType && category){
+    title = `${jobType} ${category} jobs in Ireland`
+    description = `Find ${jobType} ${category} jobs in Ireland`
+  }
+
+  return {
+    title,
+    description,
+  };
+}
+
 const jobPage = async ({searchParams}: JobProps) => {
   const jobListings = await getJobs(searchParams);
   //console.log("job listings", jobListings);
