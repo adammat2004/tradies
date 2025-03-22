@@ -4,15 +4,15 @@ import prisma from "@/app/libs/prismadb";
 export async function GET(req: Request, res: Response) {
     try {
         const { searchParams } = new URL(req.url);
-        const userId = searchParams.get("userId");
+        const listingId = searchParams.get("listingId");
 
-        if (!userId) {
+        if (!listingId) {
             return NextResponse.json({ error: "Missing userId" }, { status: 400 });
         }
 
         const jobListings = await prisma.job.findMany({
             where: {
-                userId: userId,
+                listingId: listingId,
             },
         });
 

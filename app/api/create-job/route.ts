@@ -14,9 +14,11 @@ export async function POST(req: Request) {
             requirements,
             description,
             benefits,
-            contactInfo
+            contactInfo,
+            listingId
         } = await req.json();
-
+        console.log("listingID", listingId);
+        console.log("jobTitle", jobTitle);
         if(!category || !jobTitle || !companyName || !location || !jobType || !requirements || !description || !contactInfo){
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
@@ -26,9 +28,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const listingId = currentUser.id;
+        const userId = currentUser.id;
 
-        // Ensure you're using the correct model (singular 'job' if the model is named 'Job')
         const newJob = await prisma.job.create({
             data: {
                 category,
@@ -41,7 +42,8 @@ export async function POST(req: Request) {
                 description,
                 benefits,
                 contactInfo,
-                userId: listingId,
+                userId: userId,
+                listingId: listingId
             }
         });
 

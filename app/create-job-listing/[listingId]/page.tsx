@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import SearchInput from '../components/Inputs/searchInput';
+import SearchInput from '@/app/components/Inputs/searchInput';
 
 const JobCreationPage = () => {
   const router = useRouter();
+  const params = useParams();
+  const listingId = params?.listingId as string | undefined;
   const [loading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [mounted, setMounted] = useState(false); // Added for client-side rendering
@@ -65,6 +67,7 @@ const JobCreationPage = () => {
       ...data,
       requirements: requirementsList,
       benefits: benefitsList,
+      listingId: listingId
     };
 
     try {

@@ -4,6 +4,8 @@ import { SafeUser } from "@/app/types";
 import React, { useState, useEffect } from "react";
 import { IconType } from "react-icons";
 import PostCard from "../postCard";
+import ListingsJobCard from "../listingsJobCard";
+
 
 interface ListingInfoProps {
     user: SafeUser;
@@ -22,6 +24,23 @@ interface ListingInfoProps {
         label: string;
         description: string;
     };
+}
+
+interface JobListing {
+    id: string;             
+    jobTitle: string;
+    category: string;
+    companyName: string;
+    location: string;
+    salary: string | undefined | null;
+    jobType: string;
+    requirements: string[];
+    description: string;
+    benefits: string[]
+    contactInfo: string
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string; 
 }
 
 interface Post {
@@ -48,8 +67,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     listingId,
 }) => {
     const [posts, setPosts] = useState<Post[]>([]);
-
-    // Fetch posts based on listingId
+    const [jobs, setJobs] = useState<JobListing[]>([]);
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -66,6 +84,21 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
         fetchPosts();
     }, [listingId]);
 
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const response = await fetch(`/api/getJobsByListingId?listingId=${listingId}`);
+                if (!response.ok) throw new Error("Failed to fetch job listings");
+
+                const { data } = await response.json();
+                setJobs(data);
+            } catch (error) {
+                console.error("Fetching posts error", error);
+            }
+        };
+
+        fetchJobs();
+    }, [listingId]);
     return (
         <div className="md:col-span-8 flex flex-col gap-12 p-6 bg-white rounded-lg shadow-lg">
             {/* About Section */}
@@ -102,8 +135,8 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
             </div>
 
             {/* Posts Section - Only Render if There Are Posts */}
-            {posts.length > 0 && (
-                <div className="relative min-h-screen p-6 flex flex-col">
+            {posts.length > 0 ? (
+                <div className="relative p-6 flex flex-col">
                     <h1 className="text-gray-900 text-3xl font-bold mb-6">Posts</h1>
                     <div className="relative flex flex-col flex-grow">
                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -120,7 +153,35 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
                         </ul>
                     </div>
                 </div>
+            ) : (
+                <p className="text-center text-gray-600">No posts available.</p> // Show message if no posts
             )}
+
+            {jobs.length > 0 ? (
+                <div className="container mx-auto p-6">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-6">Job Listings</h1>
+                    <div className="">
+                        <ul>
+                            {jobs.map((job) => (
+                                <li key={job.id} className="bg-white shadow-md rounded-lg overflow-hidden">
+                                    <ListingsJobCard
+                                        title={job.jobTitle}
+                                        salary={job.salary}
+                                        jobType={job.jobType}
+                                        description={job.description}
+                                        id={job.id}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex items-center justify-center h-64 text-lg text-gray-600">
+                    No Job Listings Available
+                </div>
+            )}
+
 
             {/* Contact Section */}
             <div className="flex flex-col w-full mt-12">

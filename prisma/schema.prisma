@@ -80,6 +80,7 @@ model Listing {
   isActive     Boolean   @default(false)
   posts        Posts[]
 
+  jobs         job[]
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -124,7 +125,9 @@ model job {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   userId         String   @db.ObjectId
+  listingId      String @db.ObjectId
 
+  listing Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 

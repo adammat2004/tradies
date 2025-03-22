@@ -8,6 +8,7 @@ import InputChange from "../Inputs/inputChange";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import PostCard from "../postCard";
+import { FaTrash } from "react-icons/fa";
 
 interface ServiceInfoProps {
     user: SafeUser;
@@ -78,7 +79,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
     useEffect(() => {
       const fetchJobListings = async () => {
         try{
-          const response = await fetch(`/api/getJobsByUserId?userId=${user.id}`);
+          const response = await fetch(`/api/getJobsByListingId?listingId=${id}`);
           if (!response.ok) {
             throw new Error("Failed to fetch job listings");
           }
@@ -173,6 +174,26 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       }
     }
 
+    const deletePost = async (id: string) => {
+      try {
+        const response = await fetch(`/api/deletePost?id=${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if(!response.ok){
+          throw new Error("Failed to delete post");
+        }
+        setPosts((prevPosts) => 
+          prevPosts.filter((post) => post.id !== id)
+        );
+
+        return toast.success("Post Deleted!");
+      } catch (error) {
+        return console.error("Failed to delete post");
+      }
+    }
     
     return (
       <div className="md:col-span-8 flex flex-col gap-12 p-6 bg-white rounded-lg shadow-lg">
@@ -291,7 +312,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>
       <div className="flex justify-end mt-6">
           <button 
-              onClick={() => router.push('/create-job-listing')} 
+              onClick={() => router.push(`/create-job-listing/${id}`)} 
               className="bg-red-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-600 transition"
           >
               Add Job Listing
@@ -299,25 +320,38 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
       </div>  
   </div>
 
-  <div className="relative min-h-screen p-6 flex flex-col">
+  <div className="relative p-6 flex flex-col">
     <h1 className="text-gray-900 text-3xl font-bold mb-6">My Posts</h1>
 
-    {/* Container for Posts with Relative Positioning */}
+    {/* Container for Posts */}
     <div className="relative flex flex-col flex-grow">
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {posts.map((post) => (
-                <li key={post.id}>
-                    <PostCard 
-                        id={post.id}
-                        comment={post.comment}
-                        createdAt={post.createdAt}
-                        images={post.pictures}
-                    />
-                </li>
-            ))}
-        </ul>
+        {/* Conditionally render posts */}
+        {posts.length > 0 ? (
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {posts.map((post) => (
+                    <li key={post.id} className="relative group">
+                        <PostCard 
+                            id={post.id}
+                            comment={post.comment}
+                            createdAt={post.createdAt}
+                            images={post.pictures}
+                        />
 
-        {/* Add Post Button - Positioned Bottom Right of this Container */}
+                        {/* Delete Button - Positioned Bottom Right */}
+                        <button 
+                            onClick={() => deletePost(post.id)}
+                            className="absolute bottom-4 right-4 bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 transition-transform transform hover:scale-110 flex items-center justify-center"
+                        >
+                            <FaTrash className="text-lg" />
+                        </button>
+                    </li>
+                ))}
+            </ul>
+        ) : (
+            <p className="text-center text-gray-600">No posts available.</p> // Show a message if there are no posts
+        )}
+
+        {/* Add Post Button - Positioned Bottom Right */}
         <div className="flex justify-end mt-6">
             <button 
                 className="bg-red-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-600 transition-transform transform hover:scale-105"
@@ -328,6 +362,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
         </div>
     </div>
   </div>
+
 
 
     <div className="flex flex-col w-full mt-12">
