@@ -1,9 +1,11 @@
 import prisma from '@/app/libs/prismadb';
+import IsBusiness from '../components/navbar/isBusiness';
 
 export interface IListingsParams {
     userId?: string;
     category?: string;
     county?: string;
+    isbusiness?: string;
 }
 
 export default async function getListings(
@@ -13,7 +15,8 @@ export default async function getListings(
         const {
             userId,
             category,
-            county
+            county,
+            isbusiness
         } = params;
         let query: any = {};
 
@@ -24,6 +27,14 @@ export default async function getListings(
         if(category){
             query.category = {
                 has: category,
+            }
+        }
+
+        if(isbusiness){
+            if(isbusiness === 'true'){
+                query.is_business = true;
+            } else{
+                query.is_business = false;
             }
         }
 
