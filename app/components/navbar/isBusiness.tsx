@@ -39,7 +39,7 @@ const IsBusiness = () => {
     if (!isMainPage) return null;
 
     return (
-        <div className="flex justify-center items-center sm:gap-20 my-4">
+        <div className="flex justify-center items-center gap-4 sm:gap-20 my-4">
             <button 
                 onClick={() => setIsBusiness(isBusiness === true ? null : true)} 
                 className={`px-8 py-3 sm:px-12 sm:py-4 border-4 border-rose-500 rounded-full 
