@@ -30,11 +30,13 @@ const SearchModel = () => {
         defaultValues: {
             category: '',
             county: '',
-            country: ''
+            country: '',
+            is_business: ''
         }
     });
     const category = watch('category');
     const county = watch('county');
+    const is_business = watch('is_business');
 
     const onSubmit = useCallback(async () => {
         let currentQuery = {};
@@ -46,7 +48,8 @@ const SearchModel = () => {
         const updatedQuery: any = {
             ...currentQuery,
             category,
-            county
+            county,
+            is_business
         };
 
         {/*const url = qs.stringify({
@@ -56,7 +59,7 @@ const SearchModel = () => {
         const url = `/?${qs.stringify(updatedQuery, { skipNull: true })}`;
         searchModel.onClose();
         router.push(url);
-    }, [searchModel, county, category, params]);
+    }, [searchModel, county, category, params, is_business]);
 
     let bodyContent = (
         <div className='flex flex-col gap-8'>
@@ -86,6 +89,16 @@ const SearchModel = () => {
                     "Laois", "Leitrim", "Limerick", "Longford", "Louth", "Mayo", "Meath", 
                     "Monaghan", "Offaly", "Roscommon", "Sligo", "Tipperary", "Tyrone", 
                     "Waterford", "Westmeath", "Wexford", "Wicklow"]}
+                control={control}
+            />
+            <SearchInput 
+                id="is_business"
+                label='Business or Individual'
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required={false}
+                options={["Business", "Individual"]}
                 control={control}
             />
         </div>

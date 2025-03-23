@@ -26,7 +26,7 @@ const JobCard: React.FC<JobCardProps> = ({
   return (
     <div 
       onClick={() => router.push(`jobs/${job.id}`)} 
-      className="cursor-pointer w-[60%] md:w-[70%] sm:w-[80%] h-[320px] p-8 border border-gray-300 shadow-lg rounded-2xl 
+      className="cursor-pointer w-[90%] md:w-[70%] sm:w-[80%] h-[320px] p-8 border border-gray-300 shadow-lg rounded-2xl 
                  hover:shadow-xl transition-shadow duration-300 bg-white flex flex-col justify-between mx-auto"
     >
       {/* Job Title */}

@@ -6,6 +6,8 @@ import getListings, { IListingsParams } from "./actions/getListings";
 import Container from "./components/container";
 import EmptyState from "./components/emptyState";
 import ListingCard from "./components/listings/listingCard";
+import Button from "./components/button";
+import { useRouter } from "next/navigation";
 
 interface HomeProps{
   searchParams: IListingsParams
@@ -14,7 +16,7 @@ interface HomeProps{
 export async function generateMetadata({ searchParams }: HomeProps) {
   const { category, county } = searchParams;
 
-  let title = "Irelands best tradesmen - Tradeez";
+  let title = "Tradesmen in Ireland - Tradeez";
   let description = "Find tradesmen to suit your needs.";
 
   // Modify the title and description based on the searchParams
@@ -56,13 +58,20 @@ const Home = async ({ searchParams }: HomeProps) => {
         <div className="pt-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8 pl-8 pr-8">
           {listings.map((listing) => {
             return (
-              <ListingCard
-                currentUser={currentUser} 
-                key={listing.id}
-                data={listing}
-              />
+              <div>
+                <ListingCard
+                  currentUser={currentUser} 
+                  key={listing.id}
+                  data={listing}
+                />
+              </div>
             )
           })}
+          <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-8">
+            <Button 
+              label="Remove Filters"
+            />
+          </div>
         </div>  
       </Container>
     </Suspense>

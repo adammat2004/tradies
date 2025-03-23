@@ -19,7 +19,7 @@ const JobSearch = () => {
   return (
     <div className='flex justify-center w-full'>
       <div 
-        className='w-full md:w-[70%] lg:w-[70%] bg-white border border-gray-300 shadow-lg rounded-full 
+        className='w-[90%] md:w-[70%] lg:w-[70%] bg-white border border-gray-300 shadow-lg rounded-full 
                    py-3 px-6 flex items-center justify-between hover:shadow-xl transition 
                    cursor-pointer duration-200 ease-in-out transform hover:scale-105'
         onClick={jobSearchModel.onOpen}    

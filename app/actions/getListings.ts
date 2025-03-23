@@ -5,7 +5,7 @@ export interface IListingsParams {
     userId?: string;
     category?: string;
     county?: string;
-    isbusiness?: string;
+    is_business?: string;
 }
 
 export default async function getListings(
@@ -16,7 +16,7 @@ export default async function getListings(
             userId,
             category,
             county,
-            isbusiness
+            is_business
         } = params;
         let query: any = {};
 
@@ -30,8 +30,8 @@ export default async function getListings(
             }
         }
 
-        if(isbusiness){
-            if(isbusiness === 'true'){
+        if(is_business){
+            if(is_business === 'Business'){
                 query.is_business = true;
             } else{
                 query.is_business = false;

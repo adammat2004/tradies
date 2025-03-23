@@ -52,7 +52,7 @@ export default async function RootLayout({
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar currentUser={currentUser}/>
         </Suspense>
-        <div className="pb-20 pt-56">
+        <div className="pb-20 pt-32">
             <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         </div>
       </body>
