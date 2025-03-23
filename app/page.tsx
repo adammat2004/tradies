@@ -6,7 +6,7 @@ import getListings, { IListingsParams } from "./actions/getListings";
 import Container from "./components/container";
 import EmptyState from "./components/emptyState";
 import ListingCard from "./components/listings/listingCard";
-import Button from "./components/button";
+import RemoveFilterButton from "./components/removeFilterButton";
 import { useRouter } from "next/navigation";
 
 interface HomeProps{
@@ -68,7 +68,7 @@ const Home = async ({ searchParams }: HomeProps) => {
             )
           })}
           <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-8">
-            <Button 
+            <RemoveFilterButton 
               label="Remove Filters"
             />
           </div>
