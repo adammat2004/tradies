@@ -35,6 +35,8 @@ model User {
   TempListing    TempListing[]
   posts          Posts[]
   jobs           job[]
+  resetPasswordToken String?
+  resetPasswordExpires DateTime?
 }
 
 model Account {

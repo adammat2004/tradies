@@ -18,7 +18,6 @@ import Input from '../Inputs/input';
 import toast from 'react-hot-toast';
 import Button from '../button';
 import { useRouter } from 'next/navigation';
-import RegisterModel from './registerModel';
 
 
 const LoginModel = () => {
@@ -106,6 +105,7 @@ const LoginModel = () => {
           <div>First time using Tradeez?</div>
           <div onClick={toggle} className='text-neutral-800 cursor-pointer hover:underline'>Create an account</div>
         </div>
+        <div className="hover:cursor-pointer" onClick={() => router.push('/request-reset')}>Reset Password</div>
       </div>
     </div>
   )

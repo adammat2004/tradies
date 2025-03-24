@@ -93,7 +93,7 @@ const JobSearchModel = () => {
                 register={register}
                 errors={errors}
                 required={false}
-                options={['Full Time', 'Part Time', 'Contract', 'Temporary', 'Apprenticeship']}
+                options={['Full Time', 'Part Time', 'Summer Work', 'Apprenticeship']}
                 control={control}
             />
         </div>

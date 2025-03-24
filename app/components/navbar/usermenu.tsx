@@ -76,6 +76,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                                 <MenuItem onClick={() => router.push("/jobs")} label="Job listings" />
                                 <MenuItem onClick={() => router.push("/services")} label="My service" />
                                 <MenuItem onClick={serviceModel.onOpen} label="List my service" />
+                                <MenuItem onClick={() => router.push("/contact")} label="Contact us" />
                                 <hr />
                                 <MenuItem onClick={() => signOut()} label="Logout" />
                             </>
@@ -85,6 +86,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                                 <MenuItem onClick={() => router.push("/jobs")} label="Job listings" />
                                 <MenuItem onClick={loginModel.onOpen} label="Login" />
                                 <MenuItem onClick={registerModel.onOpen} label="Sign up" />
+                                <MenuItem onClick={() => router.push("/contact")} label="Contact us" />
                             </>
                         )}
                     </div>

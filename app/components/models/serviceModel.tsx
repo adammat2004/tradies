@@ -289,7 +289,7 @@ const ServiceModel = () => {
                     disabled={isLoading}
                     register={register}
                     errors={errors}
-                    required
+                    required={true}
                     options={['Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
                                 'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth',
                                 'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary',
@@ -302,7 +302,7 @@ const ServiceModel = () => {
                     disabled={isLoading}
                     register={register}
                     errors={errors}
-                    required
+                    required={true}
                     options={['Ireland']}
                     control={control}
                 />
@@ -328,7 +328,7 @@ const ServiceModel = () => {
                 />
                 <Input 
                     id="company_name"
-                    label="Company name"
+                    label={is_business ? "Company name" : "Full name"}
                     disabled={isLoading}
                     register={register}
                     errors={errors}
@@ -359,7 +359,7 @@ const ServiceModel = () => {
             <div className="flex flex-col gap-8">
                 <Heading 
                     title="Add a photo of your work or logo"
-                    subtitle="Show clients some of your work!"
+                    subtitle="This will be the image displayed on our homepage!"
                 />
                 <ImageUpload 
                     value={imageSrc}
@@ -373,7 +373,7 @@ const ServiceModel = () => {
         bodyContent = (
             <div className="flex flex-col gap-8">
                 <Heading
-                    title="How would you describe your Service"
+                    title="Describe your Service"
                     subtitle="Tell clients about your service"
                 />
                 <Input

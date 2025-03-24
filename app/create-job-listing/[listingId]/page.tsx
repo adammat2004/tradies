@@ -173,7 +173,7 @@ const JobCreationPage = () => {
           disabled={loading}
           required={true}
           errors={errors}
-          options={['Full Time', 'Part Time', 'Apprenticeship', 'Summer Work', 'Sub Contract']}
+          options={['Full Time', 'Part Time', 'Apprenticeship', 'Summer Work']}
           control={control}
         />
 

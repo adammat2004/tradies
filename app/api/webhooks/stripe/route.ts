@@ -36,7 +36,6 @@ export async function POST(req: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const sessionId = session.id;
-      console.log("session2id", session.id);
       // Extract metadata from the session
       const { tempListingId, userId } = session.metadata || {};
 
@@ -53,8 +52,6 @@ export async function POST(req: Request) {
         throw new Error('Temporary listing not found.');
       }
 
-      console.log('Temporary listing retrieved:', tempListing);
-
       // Determine the plan based on the price ID
       let plan = 'premium'; // Default to 'premium'
       const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
@@ -68,7 +65,6 @@ export async function POST(req: Request) {
         }
       }
 
-      console.log('Plan determined:', plan);
 
       // Create a new active listing
       const newListing = await prisma.listing.create({
