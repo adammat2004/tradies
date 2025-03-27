@@ -29,7 +29,7 @@ export default async function getJobById(
                 ...jobListing.user,
                 createdAt: jobListing.user.createdAt.toISOString(),
                 updatedAt: jobListing.user.updatedAt.toISOString(),
-                emailVerified: jobListing.user.emailVerified?.toISOString() || null,
+                emailVerified: jobListing.user.emailVerified,
             }
         } 
     } catch (error: any) {

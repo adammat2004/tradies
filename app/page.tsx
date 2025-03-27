@@ -7,7 +7,6 @@ import Container from "./components/container";
 import EmptyState from "./components/emptyState";
 import ListingCard from "./components/listings/listingCard";
 import RemoveFilterButton from "./components/removeFilterButton";
-import { useRouter } from "next/navigation";
 
 interface HomeProps{
   searchParams: IListingsParams
@@ -17,7 +16,7 @@ export async function generateMetadata({ searchParams }: HomeProps) {
   const { category, county } = searchParams;
 
   let title = "Tradesmen in Ireland - Tradeez";
-  let description = "Find tradesmen to suit your needs.";
+  let description = "Find skilled and reliable tradesmen in Ireland with Tradeez.ie. Connect with professionals across various trades to meet your specific needs.";
 
   // Modify the title and description based on the searchParams
   if (category) {

@@ -156,12 +156,16 @@ const ServiceModel = () => {
             />
             <section>
                 <p className="text-lg text-gray-700">
-                    As a tradesman, showcasing your services online is crucial to growing your business. For just <strong>€10 a month</strong>, you can display information about your services, availability, and past projects to potential clients looking for reliable professionals like you.
+                    As a tradesman, showcasing your services online is crucial to growing your business. 
+                    By listing your service on Tradeez you can display information about your services, 
+                    post job listings, and past projects to potential clients looking for reliable professionals like you.
                 </p>
             </section>
             <section>
                 <p className="text-lg text-gray-700">
-                    You can easily update your business details anytime. Whether it's changing your contact information, adding a new service, or updating your portfolio with recent work, everything is fully editable. This way, you're always in control of how your business is presented to clients.
+                    You can easily update your business details anytime. 
+                    Whether it's changing your contact information, adding a new service, or updating your portfolio with recent work, everything is fully editable. 
+                    This way, you're always in control of how your business is presented to clients.
                 </p>
             </section>
         </div>
@@ -175,26 +179,46 @@ const ServiceModel = () => {
                     subtitle="Are you a business or an individual tradesman"
                 />
                 <div className="flex flex-col gap-4 w-full max-w-sm">
-                    <button 
+                    <div 
                         onClick={() => setCustomValue('is_business', true)} 
                         className={`
                             ${is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-800 hover:bg-gray-900'} 
-                            hover:bg-rose-600 text-white font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
+                            hover:bg-rose-600 text-white text-center font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
                             ${is_business ? 'border-4' : 'border-2'}
+                            cursor-pointer
                         `}
                     >
-                        Business
-                    </button>
-                    <button 
+                        <div className="text-xl">
+                            Business
+                        </div>
+                        <ul className="">
+                            <li>Listed amongst other businesses</li>
+                            <li>Unlimited Job Postings</li>
+                        </ul>
+                        <div className="">
+                            Price: €18.99/month
+                        </div>
+                    </div>
+                    <div 
                         onClick={() => setCustomValue('is_business', false)} 
                         className={`
                             ${!is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-600 hover:bg-gray-700'} 
-                            hover:bg-rose-600 text-white font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
+                            hover:bg-rose-600 text-white text-center font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
                             ${!is_business ? 'border-4' : 'border-2'}
+                            cursor-pointer
                         `}
                     >
-                        Individual
-                    </button>
+                        <div className="text-xl">
+                            Individual
+                        </div>
+                        <ul className="list-disc">
+                            <li>Listed amongst individual tradesmen</li>
+                            <li>No job Postings</li>
+                        </ul>
+                        <div>
+                            Price: €12.99/month
+                        </div>
+                    </div>
                 </div>
             </div>
         )
@@ -403,6 +427,12 @@ const ServiceModel = () => {
                     title="Pay and create your account"
                     subtitle="You're almost there"
                 />
+                <div className="text-lg text-gray-700">
+                    Clicking the button below will take you to the payment page where you can pay for your listing.
+                </div>
+                <div className="text-lg text-gray-700">
+                    All our payments are processed securely by Stripe
+                </div>
             </div>
         )
     }

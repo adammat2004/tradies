@@ -74,7 +74,7 @@ const SearchModel = () => {
                 register={register}
                 errors={errors}
                 required={false}
-                options={['Plumber', 'Electrician', 'Carpenter', 'Painter', 'Landscaping', 'Paving', 'Bricklayer', 'Haulage', 'Roofer']}
+                options={['Plumbing', 'Electrical', 'Carpentry', 'Painting', 'Landscaping', 'Paving', 'Bricklaying', 'Roofing']}
                 control={control}
             />
             <SearchInput

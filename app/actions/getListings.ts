@@ -1,5 +1,4 @@
 import prisma from '@/app/libs/prismadb';
-import IsBusiness from '../components/navbar/isBusiness';
 
 export interface IListingsParams {
     userId?: string;

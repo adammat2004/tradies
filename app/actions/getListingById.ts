@@ -29,7 +29,7 @@ export default async function getListingById(
                 ...listing.user,
                 createdAt: listing.user.createdAt.toISOString(),
                 updatedAt: listing.user.updatedAt.toISOString(),
-                emailVerified: listing.user.emailVerified?.toISOString() || null,
+                emailVerified: listing.user.emailVerified,
             }
         } 
     } catch (error: any) {
