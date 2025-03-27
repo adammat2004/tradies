@@ -5,7 +5,9 @@ interface Listing{
     updatedAt: string;
 }
 export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
-    const response = await fetch(`https://tradeez.ie/api/getListings`);
+    const response = await fetch(`https://www.tradeez.ie/api/getListings`, {
+        next: {revalidate: 3600}
+    });
     //const response = await fetch(`http://localhost:3000/api/getListings`);
     const listings: Listing[] = await response.json();
     const listingUrls: MetadataRoute.Sitemap = listings.map(({id, updatedAt}) => ({
