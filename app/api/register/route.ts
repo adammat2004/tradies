@@ -1,6 +1,9 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
+import { sendEmail } from "@/app/actions/sendEmail";
+import { VerifyEmailTemplate } from "@/app/components/verify-email-template";
 
 export async function POST(request: Request) {
     try {
@@ -24,6 +27,25 @@ export async function POST(request: Request) {
         const user = await prisma.user.create({
             data: { email, name, hashedPassword },
         });
+
+        const emailVerificationToken = crypto.randomBytes(32).toString("base64url");
+        const today = new Date();
+
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                emailVerificationToken: emailVerificationToken,
+            }
+        })
+
+        await sendEmail({
+            from: "Admin <info@tradeez.ie>",
+            to: [email],
+            subject: "Verify your email",
+            react: VerifyEmailTemplate({ email, verifyEmailToken: emailVerificationToken }),
+        })
 
         return NextResponse.json({ success: true, email, password });
     } catch (error) {

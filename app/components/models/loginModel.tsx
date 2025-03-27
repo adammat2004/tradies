@@ -38,6 +38,10 @@ const LoginModel = () => {
         password: ''
     }
   });
+  const goToResetPasswordForm = () => {
+    router.push('/resetPasswordForm');
+    loginModel.onClose();
+  }
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
@@ -105,7 +109,7 @@ const LoginModel = () => {
           <div>First time using Tradeez?</div>
           <div onClick={toggle} className='text-neutral-800 cursor-pointer hover:underline'>Create an account</div>
         </div>
-        <div className="hover:cursor-pointer" onClick={() => router.push('/request-reset')}>Reset Password</div>
+        <div className="hover:cursor-pointer" onClick={goToResetPasswordForm}>Reset Password</div>
       </div>
     </div>
   )

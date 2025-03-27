@@ -3,6 +3,7 @@ import React from 'react'
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import { useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Field,
     FieldValues,
@@ -20,6 +21,7 @@ import useLoginModel from '@/app/hooks/useLoginModel';
 
 
 const RegisterModel = () => {
+  const router = useRouter();
   const registerModel = useRegisterModel();
   const loginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +60,7 @@ const RegisterModel = () => {
                 toast.success("Logged in!");
                 registerModel.onClose();
                 loginModel.onClose();
+                router.refresh();
             }
         } else {
             toast.error(res.data.error || "Registration failed");
