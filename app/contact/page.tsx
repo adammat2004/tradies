@@ -1,5 +1,4 @@
 import React from 'react';
-import TestEmailButton from '../components/testEmailButton';
 
 const ContactPage: React.FC = () => {
   const email = 'info@tradeez.ie';  // Replace with your email
@@ -26,9 +25,6 @@ const ContactPage: React.FC = () => {
             <a href={`tel:${phoneNumber}`}>{phoneNumber}</a>
           </p>
         </div>
-      </div>
-      <div>
-        <TestEmailButton />
       </div>
     </div>
   );

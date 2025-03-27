@@ -9,7 +9,7 @@ export const ResetPasswordEmailTemplate: React.FC<Readonly<ResetPasswordEmailTem
         <p>
             To reset your password, click the link and follow the instructions:
         </p>
-        <a href={`http://localhost:3000/changePassword?token=${resetPasswordToken}`}>Reset password
+        <a href={`https://tradeez.ie/changePassword?token=${resetPasswordToken}`}>Reset password
             Click here to reset password
         </a>
     </div>

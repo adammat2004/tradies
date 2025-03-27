@@ -11,7 +11,7 @@ export const VerifyEmailTemplate: React.FC<Readonly<VerfiyEmailTemplateProps>> =
         <p>
             To verify your email, click on this link:
         </p>
-        <a href={`http://localhost:3000/verify-email?token=${verifyEmailToken}`}>
+        <a href={`https://tradeez.ie/verify-email?token=${verifyEmailToken}`}>
             Click here to verify your email
         </a>
     </div>
