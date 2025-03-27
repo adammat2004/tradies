@@ -5,7 +5,7 @@ interface Listing{
     updatedAt: string;
 }
 export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
-    const response = await fetch(`https://www.tradeez.ie/api/getListings`, {
+    {/*const response = await fetch(`https://www.tradeez.ie/api/getListings`, {
         next: {revalidate: 3600}
     });
     //const response = await fetch(`http://localhost:3000/api/getListings`);
@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
     const listingUrls: MetadataRoute.Sitemap = listings.map(({id, updatedAt}) => ({
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/listings/${id}`,
         lastModified: updatedAt
-    }))
+    }))*/}
     return [
         {
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/`
@@ -33,6 +33,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
         {
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPasswordForm`
         },
-        ...listingUrls,
+        //...listingUrls,
     ]
 }   
