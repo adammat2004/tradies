@@ -14,6 +14,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/listings/${id}`,
         lastModified: updatedAt
     }))
+    const servicesUrls: MetadataRoute.Sitemap = listings.map(({id, updatedAt}) => ({
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/services/${id}`,
+        lastModified: updatedAt
+    }))
+    const createJobUrls: MetadataRoute.Sitemap = listings.map(({id, updatedAt}) => ({
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/create-job-listing/${id}`,
+        lastModified: updatedAt
+    }))
+    const createPostUrls: MetadataRoute.Sitemap = listings.map(({id, updatedAt}) => ({
+        url: `${process.env.NEXT_PUBLIC_BASE_URL}/create-post/${id}`,
+        lastModified: updatedAt
+    }))
     return [
         {
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/`
@@ -33,6 +45,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
         {
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPasswordForm`
         },
+        {
+            url: `${process.env.NEXT_PUBLIC_BASE_URL}/contact`
+
+        },
         ...listingUrls,
+        ...servicesUrls,
+        ...createJobUrls,
+        ...createPostUrls,
     ]
 }   

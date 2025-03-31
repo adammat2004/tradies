@@ -1,7 +1,6 @@
 'use client'
 
 import { SafeUser, safeListing } from "@/app/types";
-import {Listing} from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import HeartButton from "../heartButton";
@@ -24,6 +23,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
     currentUser
 }) => {
     const router = useRouter();
+    const imageUrl = `${data.imageSrc}?q_auto,f_auto,w_auto,dpr_auto`
     return (
         <div onClick={() => router.push(`/listings/${data.id}`)} className="col-span-1 cursor-pointer group">
             <div className="flex flex-col gap-2 w-full">
@@ -31,7 +31,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
                     <Image
                         alt='Listing'
                         fill
-                        src={data.imageSrc}
+                        src={imageUrl}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover h-full w-full group-hover:scale-110 transition"
                     />
                     <div className="absolute top-3 right-3">
