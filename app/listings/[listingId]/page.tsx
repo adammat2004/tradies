@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: { params: IParams }): Promise
       title: listing.company_name || "Listing Details",
       description: listing.title || "View this listing on our platform.",
       openGraph: {
-        title: listing.title,
-        description: listing.description,
+        title: listing.company_name,
+        description: listing.title,
         images: [
             {
                 url: listing.imageSrc,
