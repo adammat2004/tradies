@@ -13,10 +13,11 @@ export default function robots(): MetadataRoute.Robots {
                     "/create-post/"
                 ],
                 disallow: [
-                    "/verify-email",
-                    "/resetPasswordForm",
-                    "/favorites",
-                    "/services",
+                    "/verify-email/",
+                    "/resetPasswordForm/",
+                    "/favorites/",
+                    "/services/",
+                    "/api/",
                 ]
             }
         ],
