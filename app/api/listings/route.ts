@@ -66,8 +66,8 @@ export async function POST(req: Request) {
       line_items: [
         {
           price: is_business === false
-            ? process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID
-            : process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID,
+            ? process.env.NEXT_PUBLIC_STRIPE_INDIVIDUAL_PRICE_ID
+            : process.env.NEXT_PUBLIC_STRIPE_BUSINESS_PRICE_ID,
           quantity: 1,
         },
       ],

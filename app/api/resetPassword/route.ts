@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/app/actions/sendEmail";
+import { sendEmail } from "@/app/actions/sendEmail"
 import prisma from "@/app/libs/prismadb";
 import { ResetPasswordEmailTemplate } from "@/app/components/ResetPasswordEmail";
 import crypto from "crypto";
