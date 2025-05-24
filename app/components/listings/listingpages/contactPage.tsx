@@ -41,7 +41,7 @@ export default function ContactPage({ companyEmail, companyPhone }: ContactPageP
 
     // Example: Sending data to an API route
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/contactCompany', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
