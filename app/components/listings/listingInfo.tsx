@@ -3,8 +3,11 @@
 import { SafeUser } from "@/app/types";
 import React, { useState, useEffect } from "react";
 import { IconType } from "react-icons";
-import PostCard from "../postCard";
-import ListingsJobCard from "../listingsJobCard";
+import AboutPage from "./listingpages/aboutPage";
+import ProjectsPage from "./listingpages/projectsPage";
+import ContactPage from "./listingpages/contactPage";
+import JobsPage from "./listingpages/jobsPage";
+import ReviewsPage from "./listingpages/reviewsPage";
 
 
 interface ListingInfoProps {
@@ -19,11 +22,11 @@ interface ListingInfoProps {
     email: string;
     city: string;
     listingId: string;
-    category?: {
+    category: {
         icon: IconType;
         label: string;
         description: string;
-    };
+    }[];
 }
 
 interface JobListing {
@@ -52,6 +55,14 @@ interface Post {
     createdAt: Date;
 }
 
+enum Page {
+    About = 0,
+    Projects = 1,
+    Contact = 2,
+    Jobs = 3,
+    Reviews = 4,
+}
+
 const ListingInfo: React.FC<ListingInfoProps> = ({
     user,
     description,
@@ -68,6 +79,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
 }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [jobs, setJobs] = useState<JobListing[]>([]);
+    const [page, setPage] = useState<Page>(Page.About);
     useEffect(() => {
         const fetchPosts = async () => {
             try {
@@ -99,106 +111,72 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
 
         fetchJobs();
     }, [listingId]);
+    
+    let bodyContent = (
+        <AboutPage 
+            paragraph1={title}
+            paragraph2={description}
+            category={category}
+        />
+    )
+    if(page === Page.Projects){
+        bodyContent = (
+            <ProjectsPage 
+                posts={posts}
+            />
+        )
+    }
+    if(page === Page.Contact){
+        bodyContent = (
+            <ContactPage 
+                companyEmail={email}
+                companyPhone={phone}
+            />
+        )
+    }
+    if(page === Page.Jobs){
+        bodyContent = (
+            <JobsPage 
+                jobs={jobs}
+            />
+        )
+    }
+    if(page === Page.Reviews){
+        bodyContent = (
+            <ReviewsPage />
+        )
+    }
     return (
-        <div className="md:col-span-8 flex flex-col gap-12 p-6 bg-white rounded-lg shadow-lg">
-            {/* About Section */}
-            <div className="flex flex-col gap-6 lg:flex-row">
-                <div className="flex-1">
-                    <h2 className="text-gray-900 text-3xl font-bold mb-4">About Us</h2>
-                    <p className="text-base text-gray-700 mb-4 leading-relaxed">{description}</p>
-                    <p className="text-base text-gray-700 leading-relaxed">{title}</p>
-                </div>
-
-                {/* Address Section (Desktop) */}
-                <div className="hidden lg:flex flex-col bg-gray-50 p-6 border border-gray-200 rounded-lg shadow-sm w-1/3">
-                    <h3 className="text-gray-900 text-xl font-semibold mb-4">Address</h3>
-                    <div className="text-base text-gray-700 space-y-2">
-                        <p>{street}</p>
-                        <p>{town}</p>
-                        <p>{city}</p>
-                        <p>{county}</p>
-                        <p>{country}</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Address Section (Mobile) */}
-            <div className="flex flex-col mt-6 lg:hidden">
-                <h3 className="text-gray-900 text-xl font-semibold mb-4">Address</h3>
-                <div className="text-base text-gray-700 space-y-2">
-                    <p>{street}</p>
-                    <p>{town}</p>
-                    <p>{city}</p>
-                    <p>{county}</p>
-                    <p>{country}</p>
+         <div className="mx-auto max-w-screen-lg px-4 md:px-6 lg:px-8 py-6">
+            <div className="w-full overflow-x-hidden">
+                <div className="bg-white shadow-md">
+                    <nav className="flex justify-between md:flex-row items-center py-4 px-6 gap-2 md:gap-8 text-lg font-medium font-serif">
+                    {[
+                        { name: "About", value: Page.About },
+                        { name: "Projects", value: Page.Projects },
+                        { name: "Contact", value: Page.Contact },
+                        { name: "Jobs", value: Page.Jobs },
+                        { name: "Reviews", value: Page.Reviews },
+                    ].map(({ name, value }) => (
+                        <button
+                        key={name}
+                        onClick={() => setPage(value)}
+                        className={`relative px-3 py-1 transition-all duration-300 hover:text-rose-500 ${
+                            page === value
+                            ? "text-rose-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-3/4 after:h-1 after:bg-rose-500 after:rounded-full"
+                            : "text-gray-600"
+                        }`}
+                        >
+                        {name}
+                        </button>
+                    ))}
+                    </nav>
                 </div>
             </div>
-
-            {/* Posts Section - Only Render if There Are Posts */}
-            {posts.length > 0 ? (
-                <div className="relative p-6 flex flex-col">
-                    <h1 className="text-gray-900 text-3xl font-bold mb-6">Posts</h1>
-                    <div className="relative flex flex-col flex-grow">
-                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {posts.map((post) => (
-                                <li key={post.id}>
-                                    <PostCard 
-                                        id={post.id}
-                                        comment={post.comment}
-                                        createdAt={post.createdAt}
-                                        images={post.pictures}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            ) : (
-                <p className="text-center text-gray-600">No posts available.</p> // Show message if no posts
-            )}
-
-            {jobs.length > 0 ? (
-                <div className="container mx-auto p-6">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-6">Job Listings</h1>
-                    <div className="">
-                        <ul>
-                            {jobs.map((job) => (
-                                <li key={job.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-                                    <ListingsJobCard
-                                        title={job.jobTitle}
-                                        salary={job.salary}
-                                        jobType={job.jobType}
-                                        description={job.description}
-                                        id={job.id}
-                                    />
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            ) : (
-                <div className="flex items-center justify-center h-64 text-lg text-gray-600">
-                    No Job Listings Available
-                </div>
-            )}
-
-
-            {/* Contact Section */}
-            <div className="flex flex-col w-full mt-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Us</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-center">
-                        <span className="text-base font-medium text-gray-700 w-24">Phone:</span>
-                        <span className="text-base text-gray-600">{phone}</span>
-                    </div>
-                    <div className="flex items-center">
-                        <span className="text-base font-medium text-gray-700 w-24">Email:</span>
-                        <span className="text-base text-gray-600">{email}</span>
-                    </div>
-                </div>
+            <div>
+                {bodyContent}
             </div>
-        </div>
-    );
-};
-
+         </div>
+    )
+}
 export default ListingInfo;

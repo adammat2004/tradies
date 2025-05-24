@@ -19,8 +19,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
     currentUser
 }) => {
     const category = useMemo(() => {
-        return categories.find((item) => 
-            item.label === listing.category)
+        return categories.filter((item) => 
+            listing.category.includes(item.label)
+        );
     }, [listing.category]);
     return (
         <Container>
@@ -34,8 +35,9 @@ const ListingClient: React.FC<ListingClientProps> = ({
                         county={listing.county}
                         company_name={listing.company_name}
                         currentUser={currentUser}
+                        town={listing.town}
                     />
-                    <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
+                    <div className="md:gap-10 mt-6">
                         <ListingInfo
                             title={listing.title}
                             town={listing.town}
