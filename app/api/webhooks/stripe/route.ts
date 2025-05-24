@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_SIGNING_SECRET!
     );
     console.log('Webhook event constructed successfully:', event.type);
   } catch (err: any) {
@@ -53,15 +53,15 @@ export async function POST(req: Request) {
       }
 
       // Determine the plan based on the price ID
-      let plan = 'premium'; // Default to 'premium'
+      let plan = 'business'; // Default to 'premium'
       const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
 
       for (const item of lineItems.data) {
         const priceId = item.price?.id;
-        if (priceId === process.env.NEXT_PUBLIC_STRIPE_YEARLY_PRICE_ID) {
-          plan = 'yearly';
-        } else if (priceId === process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID) {
-          plan = 'monthly';
+        if (priceId === process.env.NEXT_PUBLIC_STRIPE_INDIVIDUAL_PRICE_ID) {
+          plan = 'individual';
+        } else if (priceId === process.env.NEXT_PUBLIC_BUSINESS_MONTHLY_PRICE_ID) {
+          plan = 'business';
         }
       }
 
@@ -101,24 +101,16 @@ export async function POST(req: Request) {
     if(event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object as Stripe.Subscription;
       const subscriptionId = subscription.id;
-      console.log("subscriptionId", subscriptionId);
       const userId = subscription.metadata.userId;
-      console.log("userId", userId);
       const listing = await prisma.listing.findFirst({
         where: { userId: userId }
       });
       if(!listing) {
         throw new Error('Listing not found.');
       }
-      console.log("listing", listing);
-      await prisma.listing.update({
+      await prisma.listing.delete({
         where: { id: listing.id },
-        data: {
-          isActive: false,
-          plan: 'free'
-        }
       });
-      console.log("listing updated");
     } else {
       console.log(`Unhandled event type: ${event.type}`);}
 

@@ -26,7 +26,7 @@ interface ServiceInfoProps {
         icon: IconType;
         label: string;
         description: string;
-    } | undefined;
+    }[];
 }
 
 interface JobListing {
@@ -69,6 +69,7 @@ const ServiceInfo: React.FC<ServiceInfoProps> = ({
     title,
     id
 }) => {
+    console.log("ServiceInfo Props:", category)
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [isEditing2, setIsEditing2] = useState(false);

@@ -9,6 +9,7 @@ interface ListingHeadProps {
     title: string;
     imageSrc: string;
     company_name: string;
+    town: string;
     city: string;
     county: string;
     id: string;
@@ -22,13 +23,14 @@ const ListingHead: React.FC<ListingHeadProps> = ({
     currentUser,
     company_name,
     city,
-    county
+    county,
+    town
 }) => {
     return(
         <>
             <Heading
                 title={company_name}
-                subtitle={`${city}, ${county}`}
+                subtitle={`${town}, ${county}`}
             />
             <div className="w-full h-[60vh] overflow-hidden relative rounded-xl">
                 <Image 
