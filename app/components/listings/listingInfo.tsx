@@ -143,12 +143,15 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     }
     if(page === Page.Reviews){
         bodyContent = (
-            <ReviewsPage />
+            <ReviewsPage 
+                listingId={listingId}
+                userId={user.id}
+            />
         )
     }
     return (
          <div className="mx-auto max-w-screen-lg px-4 md:px-6 lg:px-8 py-6">
-            <div className="w-full overflow-x-hidden">
+            <div className="w-full md:overflow-x-hidden overflow-x-scroll">
                 <div className="bg-white shadow-md">
                     <nav className="flex justify-between md:flex-row items-center py-4 px-6 gap-2 md:gap-8 text-lg font-medium font-serif">
                     {[

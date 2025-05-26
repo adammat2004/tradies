@@ -37,10 +37,13 @@ export default async function getListings(
             }
         }
 
-        if(county){
+        {/*if(county){
             query.operationCounties = {
                 has: county, // Prisma's `has` filter checks if the array contains the value
             };
+        }**/}
+        if(county){
+            query.county = county
         }
 
         const listings = await prisma.listing.findMany({

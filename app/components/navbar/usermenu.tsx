@@ -46,7 +46,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
+    
     return (
         <div className='relative' ref={menuRef}>
             <div className='flex flex-row items-center gap-3'>
@@ -67,30 +67,48 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 </div>
             </div>
             {isOpen && (
-                <div className='absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm'>
-                    <div className='flex flex-col cursor-pointer'>
-                        {currentUser ? (
+                <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+                    <div className="flex flex-col cursor-pointer">
+                    {(() => {
+                        if (currentUser && currentUser.plan === "premium") {
+                        return (
                             <>
-                                <MenuItem onClick={() => router.push("/")} label="Home" />
-                                <MenuItem onClick={() => router.push("/favorites")} label="My Favorites" />
-                                <MenuItem onClick={() => router.push("/jobs")} label="Job Listings" />
-                                <MenuItem onClick={() => router.push("/services")} label="My Service" />
-                                <MenuItem onClick={serviceModel.onOpen} label="List My Service" />
-                                <MenuItem onClick={() => router.push("/create-a-quote")} label="Create A Quote"/>
-                                <MenuItem onClick={() => router.push("/my-quotes")} label="My Quotes"/>
-                                <MenuItem onClick={() => router.push("/contact")} label="Contact Us" />
-                                <hr />
-                                <MenuItem onClick={() => signOut()} label="Logout" />
+                            <MenuItem onClick={() => router.push("/")} label="Home" />
+                            <MenuItem onClick={() => router.push("/favorites")} label="My Favorites" />
+                            <MenuItem onClick={() => router.push("/jobs")} label="Job Listings" />
+                            <MenuItem onClick={() => router.push("/services")} label="My Service" />
+                            <MenuItem onClick={serviceModel.onOpen} label="List My Service" />
+                            <MenuItem onClick={() => router.push("/create-a-quote")} label="Create A Quote" />
+                            <MenuItem onClick={() => router.push("/my-quotes")} label="My Quotes" />
+                            <MenuItem onClick={() => router.push("/contact")} label="Contact Us" />
+                            <hr />
+                            <MenuItem onClick={() => signOut()} label="Logout" />
                             </>
-                        ) : (
+                        );
+                        } else if (currentUser && currentUser.plan === "free") {
+                        return (
                             <>
-                                <MenuItem onClick={() => router.push("/")} label="Home" />
-                                <MenuItem onClick={() => router.push("/jobs")} label="Job listings" />
-                                <MenuItem onClick={loginModel.onOpen} label="Login" />
-                                <MenuItem onClick={registerModel.onOpen} label="Sign up" />
-                                <MenuItem onClick={() => router.push("/contact")} label="Contact us" />
+                            <MenuItem onClick={() => router.push("/")} label="Home" />
+                            <MenuItem onClick={() => router.push("/jobs")} label="Job Listings" />
+                            <MenuItem onClick={serviceModel.onOpen} label="List My Service" />
+                            <MenuItem onClick={() => router.push("/contact")} label="Contact Us" />
+                            <hr />
+                            <MenuItem onClick={() => signOut()} label="Logout" />
                             </>
-                        )}
+                        );
+                        } else {
+                        // No user logged in
+                        return (
+                            <>
+                            <MenuItem onClick={() => router.push("/")} label="Home" />
+                            <MenuItem onClick={() => router.push("/jobs")} label="Job Listings" />
+                            <MenuItem onClick={loginModel.onOpen} label="Login" />
+                            <MenuItem onClick={registerModel.onOpen} label="Sign Up" />
+                            <MenuItem onClick={() => router.push("/contact")} label="Contact Us" />
+                            </>
+                        );
+                        }
+                    })()}
                     </div>
                 </div>
             )}

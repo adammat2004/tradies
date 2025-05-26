@@ -37,6 +37,7 @@ model User {
   posts          Posts[]
   jobs           job[]
   quotes          Quote[]
+  reviews       Reviews[]
   resetPasswordToken String?
   resetPasswordExpires DateTime?
 }
@@ -84,10 +85,26 @@ model Listing {
   plan         String    @default("free")
   isActive     Boolean   @default(false)
   posts        Posts[]
-
+  reviews      Reviews[]
   jobs         job[]
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Reviews {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  listingId  String   @db.ObjectId
+  rating     Int      // e.g. 1 to 5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([listingId])
+}
+
 
 model TempListing {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
