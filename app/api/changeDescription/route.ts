@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         const updatedListing = await prisma.listing.update({
             where: {id: id},
             data: {
-                description: description
+                title: description
             },
         });
         return NextResponse.json(updatedListing);

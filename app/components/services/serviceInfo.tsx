@@ -112,8 +112,8 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
     
     let bodyContent = (
         <AboutPage 
-            paragraph1={title}
-            paragraph2={description}
+            paragraph1={description}
+            paragraph2={title}
             category={category}
             id={listingId}
         />
@@ -129,6 +129,7 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
         bodyContent = (
             <JobsPage 
                 jobs={jobs}
+                id={listingId}
             />
         )
     }

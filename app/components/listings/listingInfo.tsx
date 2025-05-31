@@ -114,8 +114,8 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     
     let bodyContent = (
         <AboutPage 
-            paragraph1={title}
-            paragraph2={description}
+            paragraph1={description}
+            paragraph2={title}
             category={category}
         />
     )

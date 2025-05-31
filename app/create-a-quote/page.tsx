@@ -1,8 +1,11 @@
 'use client';
 
+import useServiceModel from '../hooks/useServiceModel';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import useLoginModel from '../hooks/useLoginModel';
+import { set } from 'react-hook-form';
 
 interface LineItem {
   [key: string]: string | number;
@@ -21,17 +24,19 @@ interface Note {
 const CreateQuotePage = () => {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<any>(null);
-
+  const [loading, setLoading] = useState(true);
+  const serviceModel = useServiceModel();
+  const loginModel = useLoginModel();
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const res = await fetch('/api/get-current-user');
         if (!res.ok) {
-          toast.error('You must be logged in to create a quote');
           return;
         }
         const data = await res.json();
         setCurrentUser(data.data);
+        setLoading(false);
       } catch (error) {
         toast.error('Failed to fetch current user');
       }
@@ -132,6 +137,20 @@ const CreateQuotePage = () => {
       console.error(error);
     }
   };
+  if(loading){
+    <div className="flex items-center justify-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+    </div>
+  }
+  if (!currentUser && !loading) {
+    return (
+      <div>
+        <div className="text-xl font-serif text-center">
+          You must have a service listed to create a quote.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 p-10 space-y-10">

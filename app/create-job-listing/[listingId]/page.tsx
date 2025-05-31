@@ -102,7 +102,14 @@ const JobCreationPage = () => {
   };
 
   if (!mounted) return null; // Render nothing until mounted to avoid SSR mismatch
-
+  if(!currentUser) {
+    return (
+      <div className="container text-center mx-auto p-6">
+        <h1 className="text-2xl font-bold mb-4">Unauthorised</h1>
+      </div>
+    );
+  }
+  
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">List a New Job</h1>
