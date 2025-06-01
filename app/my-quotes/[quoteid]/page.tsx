@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas-pro';
+import { useRouter } from 'next/navigation';
 
 interface Item {
   id: string;
@@ -51,6 +52,7 @@ enum Steps {
 }
 
 const Page = () => {
+  const router = useRouter();
   const params = useParams();
   const quoteId = params?.quoteid as string;
   const [step, setStep] = useState(Steps.Temp1);
@@ -372,6 +374,12 @@ const Page = () => {
       {bodyContent}
 
       <div className="flex gap-4 justify-end mb-4 pt-6">
+        <button
+          onClick={() => router.push(`/edit-quote/${quote.id}`)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow-md"
+        >
+          Edit Quote
+        </button>
         <button
           onClick={handleDownloadPDF}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 shadow-md"

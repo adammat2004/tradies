@@ -83,8 +83,16 @@ const JobsPage: React.FC<jobsPageProps> = ({
                     </div>
                 </div>
             ) : (
-                <div className="flex items-center justify-center h-64 text-lg text-gray-600">
-                    No Job Listings Available
+                <div className="flex flex-col items-center justify-center h-64 text-lg text-gray-600">
+                    <div>No Job Listings Available</div>
+                    <div className="flex justify-end mt-6">
+                        <button 
+                            onClick={() => router.push(`/create-job-listing/${id}`)} 
+                            className="bg-rose-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-red-600 transition"
+                        >
+                            Add Job Listing
+                        </button>
+                    </div>
                 </div>
         )}
     </div>

@@ -204,7 +204,8 @@ model Table {
   title    String
   quoteId  String   @db.ObjectId
   quote    Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-  columns  String[] // NEW: Dynamic columns
+  columns  String[] 
+  multiplierColumns String[]
   items    Item[]
 }
 
