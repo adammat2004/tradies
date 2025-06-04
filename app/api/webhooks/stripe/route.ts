@@ -36,6 +36,7 @@ export async function POST(req: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const sessionId = session.id;
+      const stripeCustomerId = session.customer as string; // Stripe Customer ID
       // Extract metadata from the session
       const { tempListingId, userId } = session.metadata || {};
 
@@ -86,7 +87,14 @@ export async function POST(req: Request) {
           isActive: true, // Mark the listing as active
           userId: tempListing.userId,
           operationCounties: tempListing.operationCounties,
+          stripeCustomerId: stripeCustomerId, // Store the Stripe Customer ID
         },
+      });
+      const updateduser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          plan: 'premium'
+        }
       });
 
       // Delete the temporary listing after converting
@@ -111,6 +119,25 @@ export async function POST(req: Request) {
       await prisma.listing.delete({
         where: { id: listing.id },
       });
+      const listingCount = await prisma.listing.count({
+        where: { userId: userId }
+      });
+      if(listingCount > 0) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: 'premium'
+          }
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: 'free'
+          }
+        });
+      }
+      
     } else {
       console.log(`Unhandled event type: ${event.type}`);}
 

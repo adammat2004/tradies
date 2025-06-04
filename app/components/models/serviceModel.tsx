@@ -29,11 +29,12 @@ enum STEPS {
 }
 
 const counties = [
-    'Antrim', 'Armagh', 'Carlow', 'Cavan', 'Clare', 'Cork', 'Derry', 'Donegal', 
-    'Down', 'Dublin', 'Fermanagh', 'Galway', 'Kerry', 'Kildare', 'Kilkenny', 'Laois', 
-    'Leitrim', 'Limerick', 'Longford', 'Louth', 'Mayo', 'Meath', 'Monaghan', 'Offaly', 
-    'Roscommon', 'Sligo', 'Tyrone', 'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
-].map((county) => ({label: county, value: county}));
+    'Carlow', 'Cavan', 'Clare', 'Cork', 'Donegal', 'Dublin', 'Galway', 'Kerry',
+    'Kildare', 'Kilkenny', 'Laois', 'Leitrim', 'Limerick', 'Longford', 'Louth',
+    'Mayo', 'Meath', 'Monaghan', 'Offaly', 'Roscommon', 'Sligo', 'Tipperary',
+    'Waterford', 'Westmeath', 'Wexford', 'Wicklow'
+].map((county) => ({ label: county, value: county }));
+
 
 
 const ServiceModel = () => {
@@ -154,19 +155,35 @@ const ServiceModel = () => {
                 title="List your service!"
                 subtitle="Get noticed online and attract more clients with ease"
             />
-            <section>
-                <p className="text-lg text-gray-700">
-                    As a tradesman, showcasing your services online is crucial to growing your business. 
-                    By listing your service on Tradeez you can display information about your services, 
-                    post job listings, and past projects to potential clients looking for reliable professionals like you.
-                </p>
-            </section>
-            <section>
-                <p className="text-lg text-gray-700">
-                    You can easily update your business details anytime. 
-                    Whether it's changing your contact information, adding a new service, or updating your portfolio with recent work, everything is fully editable. 
-                    This way, you're always in control of how your business is presented to clients.
-                </p>
+            <section className="space-y-6">
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Promote Your Services</h2>
+                    <p className="text-lg text-gray-700">
+                    As a tradesman, having a strong online presence is key to growing your business. 
+                    By listing your services on <strong>Tradeez</strong>, you can:
+                    </p>
+                    <ul className="list-disc list-inside text-lg text-gray-700 mt-2">
+                    <li>Showcase your services and past projects</li>
+                    <li>Advertise job opportunities at your company</li>
+                    <li>Use built-in quoting tools to send quotes in minutes</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Stay in Control</h2>
+                    <p className="text-lg text-gray-700">
+                    Easily update your business details at any time. Whether it’s changing your contact info,
+                    adding new services, or showcasing recent work, everything is fully editable—so you're always
+                    in control of your brand.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Get Started for Free</h2>
+                    <p className="text-lg text-gray-700">
+                    Join us today and enjoy a <strong>30-day free trial</strong> of our premium plan—no commitment required.
+                    </p>
+                </div>
             </section>
         </div>
     );
@@ -179,46 +196,40 @@ const ServiceModel = () => {
                     subtitle="Are you a business or an individual tradesman"
                 />
                 <div className="flex flex-col gap-4 w-full max-w-sm">
-                    <div 
-                        onClick={() => setCustomValue('is_business', true)} 
+                    {[
+                        {
+                        label: "Business",
+                        description: "Ideal for companies managing teams or posting job listings.",
+                        isSelected: is_business,
+                        onClick: () => setCustomValue("is_business", true),
+                        },
+                        {
+                        label: "Individual",
+                        description: "Perfect for solo tradesmen showcasing services.",
+                        isSelected: !is_business,
+                        onClick: () => setCustomValue("is_business", false),
+                        },
+                    ].map(({ label, description, isSelected, onClick }) => (
+                        <button
+                        key={label}
+                        onClick={onClick}
+                        type="button"
                         className={`
-                            ${is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-800 hover:bg-gray-900'} 
-                            hover:bg-rose-600 text-white text-center font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
-                            ${is_business ? 'border-4' : 'border-2'}
-                            cursor-pointer
+                            ${isSelected ? "bg-rose-500 border-rose-600" : "bg-gray-700 hover:bg-gray-800"} 
+                            text-white text-left px-4 py-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105
+                            ${isSelected ? "border-4" : "border-2"} border-solid cursor-pointer
                         `}
-                    >
-                        <div className="text-xl">
-                            Business
+                        >
+                        <div className="flex justify-between items-center mb-1">
+                            <span className="text-xl font-semibold">{label}</span>
+                            <span className="bg-white text-rose-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                            30-day free trial
+                            </span>
                         </div>
-                        <ul className="">
-                            <li>Listed amongst other businesses</li>
-                            <li>Unlimited Job Postings</li>
-                        </ul>
-                        <div className="">
-                            Price: €18.99/month
-                        </div>
-                    </div>
-                    <div 
-                        onClick={() => setCustomValue('is_business', false)} 
-                        className={`
-                            ${!is_business ? 'bg-rose-500 border-rose-600' : 'bg-gray-600 hover:bg-gray-700'} 
-                            hover:bg-rose-600 text-white text-center font-medium py-3 rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105 
-                            ${!is_business ? 'border-4' : 'border-2'}
-                            cursor-pointer
-                        `}
-                    >
-                        <div className="text-xl">
-                            Individual
-                        </div>
-                        <ul className="list-disc">
-                            <li>Listed amongst individual tradesmen</li>
-                            <li>No job Postings</li>
-                        </ul>
-                        <div>
-                            Price: €12.99/month
-                        </div>
-                    </div>
+                        <div className="text-sm opacity-80 mb-2">{description}</div>
+                        <div className="font-medium">Price: €12.99/month</div>
+                        </button>
+                    ))}
                 </div>
             </div>
         )

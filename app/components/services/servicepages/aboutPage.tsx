@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Textarea } from '../../ui/Textarea';
 import {categories} from '../../navbar/categories';
 import CategoryInput from '../../Inputs/categoryInput';
+import toast from 'react-hot-toast';
 
 interface AboutPageProps {
   paragraph1: string;
@@ -101,8 +102,28 @@ const AboutPage: React.FC<AboutPageProps> = ({
     }
   }
 
+  const createPortalSession = async (listingId: string) => {
+    try {
+      const response = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ listingId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create portal session');
+      }
+
+      const data = await response.json();
+      window.location.href = data.url; // Redirect to the Stripe portal
+    } catch (error) {
+      toast.error('Failed to create portal session. Please try again later.');
+    }
+  }
   return (
-    <section className="border border-gray-200 max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12 mt-8 animate-fadeIn">
+    <section className="relative h-screen border border-gray-200 max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12 mt-8 animate-fadeIn">
       <div className="border-l-4 border-gray-600 pl-4 mb-6">
         <p className="text-gray-600 text-lg leading-relaxed">{paragraph1}</p>
         {isEditing ? (
@@ -216,6 +237,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
           </button>
         )}
       </div>
+      <button onClick={() => createPortalSession(id)} className='absolute bottom-5 right-5 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md'>Manage Subscription</button>
     </section>
   )
 }
