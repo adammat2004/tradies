@@ -199,7 +199,7 @@ const ServiceModel = () => {
                     {[
                         {
                         label: "Business",
-                        description: "Ideal for companies managing teams or posting job listings.",
+                        description: "Ideal for companies who want to increase their exposure, create professional quotes or post job listings.",
                         isSelected: is_business,
                         onClick: () => setCustomValue("is_business", true),
                         },
@@ -442,11 +442,22 @@ const ServiceModel = () => {
                     Clicking the button below will take you to the payment page where you can pay for your listing.
                 </div>
                 <div className="text-lg text-gray-700">
-                    All our payments are processed securely by Stripe
+                    All our payments are processed securely by Stripe.
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                    By clicking the payment button, you accept our&nbsp;
+                    <a href="/terms-and-conditions" className="underline hover:text-gray-700" target="_blank" rel="noopener noreferrer">
+                        Terms and Conditions
+                    </a>
+                    &nbsp;and&nbsp;
+                    <a href="/privacy-policy" className="underline hover:text-gray-700" target="_blank" rel="noopener noreferrer">
+                        Privacy Policy
+                    </a>.
                 </div>
             </div>
         )
     }
+
     return (
         <Model 
             isOpen={serviceModel.isOpen}

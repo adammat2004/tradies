@@ -46,13 +46,19 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 </div>
                 <div className="font-light text-neutral-500">
                     <ul className="flex flex-row gap-3">
-                        {data.category.map((cat) => (
-                            <li className="" key={cat}>
-                                <div>{cat}</div>
-                            </li>
+                        {data.category.slice(0, 2).map((cat) => (
+                        <li key={cat}>
+                            <div>{cat}</div>
+                        </li>
                         ))}
+                        {data.category.length > 2 && (
+                        <li>
+                            <div>+ more</div>
+                        </li>
+                        )}
                     </ul>
                 </div>
+
                 <div className="font-semibold text-lg">
                     {data?.county}, {data?.country}
                 </div>

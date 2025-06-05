@@ -123,7 +123,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
     }
   }
   return (
-    <section className="relative h-screen border border-gray-200 max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12 mt-8 animate-fadeIn">
+    <section className="relative min-h-screen border border-gray-200 max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-12 mt-8 animate-fadeIn">
       <div className="border-l-4 border-gray-600 pl-4 mb-6">
         <p className="text-gray-600 text-lg leading-relaxed">{paragraph1}</p>
         {isEditing ? (
@@ -237,7 +237,14 @@ const AboutPage: React.FC<AboutPageProps> = ({
           </button>
         )}
       </div>
-      <button onClick={() => createPortalSession(id)} className='absolute bottom-5 right-5 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 shadow-md'>Manage Subscription</button>
+      <div className="mt-8 text-center">
+        <button
+          onClick={() => createPortalSession(id)}
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Manage Subscription
+        </button>
+      </div>
     </section>
   )
 }
