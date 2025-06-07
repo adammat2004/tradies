@@ -181,7 +181,7 @@ const ServiceModel = () => {
                 <div>
                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Get Started for Free</h2>
                     <p className="text-lg text-gray-700">
-                    Join us today and enjoy a <strong>30-day free trial</strong> of our premium plan—no commitment required.
+                    Join us today and enjoy a <strong>60-day free trial</strong> of our premium plan—no commitment required.
                     </p>
                 </div>
             </section>
