@@ -80,7 +80,7 @@ export async function POST(req: Request) {
         tempListingId: tempListingId.toString(),
       },
       subscription_data: {
-        trial_period_days: 30,
+        trial_period_days: 60,
         metadata: {
           userId: userId.toString(),
           tempListingId: tempListingId.toString(),

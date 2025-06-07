@@ -2,7 +2,7 @@
 
 import useServiceModel from "@/app/hooks/useServiceModel";
 import Model from "./model";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Heading from "../heading";
 import { categories } from "../navbar/categories";
 import CategoryInput from "../Inputs/categoryInput";
@@ -126,7 +126,7 @@ const ServiceModel = () => {
         .catch((error) => {
             // Log the error if any, and display an error message
             console.error('Error creating listing:', error);
-            toast.error("Something went wrong.");
+            toast.error("Make sure all fields are entered.");
         })
         .finally(() => {
             setIsLoading(false);
@@ -202,14 +202,16 @@ const ServiceModel = () => {
                         description: "Ideal for companies who want to increase their exposure, create professional quotes or post job listings.",
                         isSelected: is_business,
                         onClick: () => setCustomValue("is_business", true),
+                        price: "€15.99/month",
                         },
                         {
                         label: "Individual",
                         description: "Perfect for solo tradesmen showcasing services.",
                         isSelected: !is_business,
                         onClick: () => setCustomValue("is_business", false),
+                        price: "€11.99/month",
                         },
-                    ].map(({ label, description, isSelected, onClick }) => (
+                    ].map(({ label, description, isSelected, onClick, price }) => (
                         <button
                         key={label}
                         onClick={onClick}
@@ -223,17 +225,18 @@ const ServiceModel = () => {
                         <div className="flex justify-between items-center mb-1">
                             <span className="text-xl font-semibold">{label}</span>
                             <span className="bg-white text-rose-600 text-xs font-bold px-2 py-0.5 rounded-full">
-                            30-day free trial
+                            60-day free trial
                             </span>
                         </div>
                         <div className="text-sm opacity-80 mb-2">{description}</div>
-                        <div className="font-medium">Price: €12.99/month</div>
+                        <div className="font-medium">Price: {price}</div>
                         </button>
                     ))}
                 </div>
             </div>
         )
     }
+
     
     
     if(step == STEPS.CATEGORY){
@@ -393,7 +396,7 @@ const ServiceModel = () => {
         bodyContent = (
             <div className="flex flex-col gap-8">
                 <Heading 
-                    title="Add a photo of your work or logo"
+                    title="Add a profile image"
                     subtitle="This will be the image displayed on our homepage!"
                 />
                 <ImageUpload 

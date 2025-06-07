@@ -66,7 +66,7 @@ model Listing {
   title        String
   is_business  Boolean @default(true)
   description  String
-  imageSrc     String
+  imageSrc     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime? @updatedAt
   category     String[]
@@ -112,7 +112,7 @@ model TempListing {
   stripeSessionId String?   @unique
   category        String[]
   is_business     Boolean @default(true)
-  imageSrc        String
+  imageSrc        String?
   title           String
   description     String
   email           String

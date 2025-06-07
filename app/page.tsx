@@ -19,17 +19,15 @@ export async function generateMetadata({ searchParams }: HomeProps) {
   let description = "Find skilled and reliable tradesmen in Ireland with Tradeez.ie. Connect with professionals across various trades to meet your specific needs.";
 
   // Modify the title and description based on the searchParams
-  if (category) {
-    title = `${category} services - Tradeez`;
-    description = `Browse the best ${category} contractors in Ireland.`;
-  }
-  if (county) {
-    title = `Tradesmen in ${county} - Tradeez`;
-    description = `Find tradesmen available in ${county}.`;
-  }
   if (category && county) {
     title = `${category} services in ${county} - Tradeez`;
     description = `Find ${category} services located in ${county}.`;
+  } else if (category) {
+    title = `${category} services - Tradeez`;
+    description = `Browse the best ${category} contractors in Ireland.`;
+  } else if (county) {
+    title = `Tradesmen in ${county} - Tradeez`;
+    description = `Find tradesmen available in ${county}.`;
   }
 
   return {

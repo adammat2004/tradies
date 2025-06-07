@@ -75,7 +75,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
       </div>
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
-          <div className="flex flex-col cursor-pointer">
+          <div className="flex flex-col cursor-pointer px-4 py-3">
             {(() => {
               if (currentUser && currentUser.plan === "premium") {
                 return (
@@ -83,12 +83,25 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/"))} label="Home" />
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/favorites"))} label="My Favorites" />
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/jobs"))} label="Job Listings" />
-                    <MenuItem onClick={() => handleMenuItemClick(() => router.push("/services"))} label="My Service" />
-                    <MenuItem onClick={() => handleMenuItemClick(serviceModel.onOpen)} label="List My Service" />
-                    <MenuItem onClick={() => handleMenuItemClick(() => router.push("/create-a-quote"))} label="Create A Quote" />
-                    <MenuItem onClick={() => handleMenuItemClick(() => router.push("/my-quotes"))} label="My Quotes" />
+
+                    {/* Quotation Section */}
+                    <div className="mt-3 mb-1 px-3 text-rose-600 font-semibold uppercase tracking-wide select-none">
+                      My Listing
+                    </div>
+                    <div className='flex flex-col space-y-1 ml-4'>
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push("/services"))} label="My Service" />
+                      <MenuItem onClick={() => handleMenuItemClick(serviceModel.onOpen)} label="Add Service" />
+                    </div>
+                    <div className="mt-3 mb-1 px-3 text-rose-600 font-semibold uppercase tracking-wide select-none">
+                      Quotation
+                    </div>
+                    <div className="flex flex-col space-y-1 ml-4">
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push("/create-a-quote"))} label="Create Quote" />
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push("/my-quotes"))} label="My Quotes" />
+                    </div>
+
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/contact"))} label="Contact Us" />
-                    <hr />
+                    <hr className="my-2" />
                     <MenuItem onClick={() => handleMenuItemClick(() => signOut())} label="Logout" />
                   </>
                 );
@@ -99,7 +112,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/jobs"))} label="Job Listings" />
                     <MenuItem onClick={() => handleMenuItemClick(serviceModel.onOpen)} label="List My Service" />
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/contact"))} label="Contact Us" />
-                    <hr />
+                    <hr className="my-2" />
                     <MenuItem onClick={() => handleMenuItemClick(() => signOut())} label="Logout" />
                   </>
                 );
