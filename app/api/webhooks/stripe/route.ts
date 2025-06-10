@@ -106,6 +106,39 @@ export async function POST(req: Request) {
     } else {
       console.log(`Unhandled event type: ${event.type}`);
     }
+
+
+   if (event.type === 'customer.subscription.updated') {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      const listing = await prisma.listing.findFirst({
+        where: { stripeCustomerId: subscription.customer as string }
+      });
+
+      console.log('Listing found:', listing);
+
+      if (!listing) {
+        throw new Error('Listing not found.');
+      }
+
+      const isCancelled = subscription.cancel_at_period_end || subscription.status === 'canceled';
+
+      await prisma.listing.update({
+        where: { id: listing.id },
+        data: {
+          expiresOn: isCancelled
+            ? new Date(subscription.current_period_end * 1000)
+            : null
+        }
+      });
+
+      console.log(
+        `Subscription updated for listing ${listing.id}, expiresOn: ${
+          isCancelled ? new Date(subscription.current_period_end * 1000) : 'null (active)'
+        }`
+      );
+    }
+
     if(event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object as Stripe.Subscription;
       const subscriptionId = subscription.id;

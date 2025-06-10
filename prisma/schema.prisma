@@ -82,7 +82,7 @@ model Listing {
   country      String
   userId       String    @db.ObjectId
   startDate    DateTime  @default(now())
-  endDate      DateTime?
+  expiresOn    DateTime?
   plan         String    @default("free")
   isActive     Boolean   @default(false)
   posts        Posts[]
