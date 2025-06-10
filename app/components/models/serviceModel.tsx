@@ -181,7 +181,7 @@ const ServiceModel = () => {
                 <div>
                     <h2 className="text-xl font-semibold text-gray-800 mb-2">Get Started for Free</h2>
                     <p className="text-lg text-gray-700">
-                    Join us today and enjoy a <strong>60-day free trial</strong> of our premium plan—no commitment required.
+                    Join us today and enjoy a <strong>60-day free trial</strong> of our premium plan.
                     </p>
                 </div>
             </section>
@@ -199,14 +199,32 @@ const ServiceModel = () => {
                     {[
                         {
                         label: "Business",
-                        description: "Ideal for companies who want to increase their exposure, create professional quotes or post job listings.",
+                        description: <div>
+                            <div>Ideal for companies who want to increase their exposure, create professional quotes or post job listings.</div>
+                                <ul className="list-disc list-inside mt-2">
+                                    <li className="mt-2">Unlimited job postings</li>
+                                    <li className="mt-1">Unlimited quotes</li>
+                                    <li className="mt-1">Unlimited categories</li>
+                                    <li className="mt-1">Unlimited counties</li>
+                                    <li className="mt-1">Unlimited projects</li>
+                                </ul>
+                            </div>,
                         isSelected: is_business,
                         onClick: () => setCustomValue("is_business", true),
                         price: "€15.99/month",
                         },
                         {
                         label: "Individual",
-                        description: "Perfect for solo tradesmen showcasing services.",
+                        description: <div>
+                            Perfect for solo tradesmen showcasing services. <br />
+                            <ul className="list-disc list-inside mt-2">
+                                <li>No job postings</li>
+                                <li>Limited access to quotes</li>
+                                <li>Unlimited categories</li>
+                                <li>Max 3 counties</li>
+                                <li>Unlimited projects</li>
+                            </ul>
+                        </div>,//"Perfect for solo tradesmen showcasing services.",
                         isSelected: !is_business,
                         onClick: () => setCustomValue("is_business", false),
                         price: "€11.99/month",

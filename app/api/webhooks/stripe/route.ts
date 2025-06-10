@@ -103,8 +103,6 @@ export async function POST(req: Request) {
       });
 
       console.log('Temporary listing deleted successfully.');
-    } else {
-      console.log(`Unhandled event type: ${event.type}`);
     }
 
 
@@ -171,8 +169,7 @@ export async function POST(req: Request) {
         });
       }
       
-    } else {
-      console.log(`Unhandled event type: ${event.type}`);}
+    }
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error: any) {
