@@ -375,81 +375,82 @@ const EditQuotePage = () => {
                 + Add
               </button>
             </div>
+            <div className='overflow-x-auto'>
+              <table className="min-w-[800px] table-auto border">
+                <thead>
+                  <tr>
+                    {table.columns.map((col, colIndex) => (
+                      <th key={colIndex} className="border px-4 py-2 bg-gray-100">
+                        <div className="flex items-center gap-2">
+                          <input
+                            className="font-semibold text-sm w-full border-none bg-transparent outline-none"
+                            value={col}
+                            onChange={(e) => {
+                              const updatedColumns = [...table.columns];
+                              const oldCol = updatedColumns[colIndex];
+                              const newCol = e.target.value;
+                              if (!newCol.trim()) return;
+                              updatedColumns[colIndex] = newCol;
 
-            <table className="min-w-full table-auto border">
-              <thead>
-                <tr>
-                  {table.columns.map((col, colIndex) => (
-                    <th key={colIndex} className="border px-4 py-2 bg-gray-100">
-                      <div className="flex items-center gap-2">
-                        <input
-                          className="font-semibold text-sm w-full border-none bg-transparent outline-none"
-                          value={col}
-                          onChange={(e) => {
-                            const updatedColumns = [...table.columns];
-                            const oldCol = updatedColumns[colIndex];
-                            const newCol = e.target.value;
-                            if (!newCol.trim()) return;
-                            updatedColumns[colIndex] = newCol;
+                              const updatedItems = table.items.map((item) => {
+                                const updatedItem = { ...item, [newCol]: item[oldCol] };
+                                delete updatedItem[oldCol];
+                                return updatedItem;
+                              });
 
-                            const updatedItems = table.items.map((item) => {
-                              const updatedItem = { ...item, [newCol]: item[oldCol] };
-                              delete updatedItem[oldCol];
-                              return updatedItem;
-                            });
-
-                            const updatedTables = [...tables];
-                            updatedTables[tableIndex].columns = updatedColumns;
-                            updatedTables[tableIndex].items = updatedItems;
-                            setTables(updatedTables);
-                          }}
-                        />
+                              const updatedTables = [...tables];
+                              updatedTables[tableIndex].columns = updatedColumns;
+                              updatedTables[tableIndex].items = updatedItems;
+                              setTables(updatedTables);
+                            }}
+                          />
+                          <button
+                            onClick={() => removeColumn(tableIndex, col)}
+                            className="text-red-500"
+                            type="button"
+                            title="Remove column"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </th>
+                    ))}
+                    <th className="border px-4 py-2 bg-gray-100">Total</th>
+                    <th className="border px-4 py-2 bg-gray-100"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.items.map((item, itemIndex) => (
+                    <tr key={itemIndex}>
+                      {table.columns.map((col, colIndex) => (
+                        <td key={colIndex} className="border px-4 py-2">
+                          <input
+                            className="w-full outline-none bg-transparent"
+                            value={item[col] as string | number}
+                            onChange={(e) =>
+                              updateItem(tableIndex, itemIndex, col, e.target.value)
+                            }
+                          />
+                        </td>
+                      ))}
+                      <td className="border px-4 py-2 text-right">
+                        <span>€{(item.total || 0).toFixed(2)}</span>
+                      </td>
+                      <td className="border px-4 py-2 text-center">
                         <button
-                          onClick={() => removeColumn(tableIndex, col)}
-                          className="text-red-500"
+                          onClick={() => removeItemFromTable(tableIndex, itemIndex)}
+                          className="text-red-600 font-bold"
                           type="button"
-                          title="Remove column"
+                          title="Remove line item"
                         >
                           ✕
                         </button>
-                      </div>
-                    </th>
-                  ))}
-                  <th className="border px-4 py-2 bg-gray-100">Total</th>
-                  <th className="border px-4 py-2 bg-gray-100"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {table.items.map((item, itemIndex) => (
-                  <tr key={itemIndex}>
-                    {table.columns.map((col, colIndex) => (
-                      <td key={colIndex} className="border px-4 py-2">
-                        <input
-                          className="w-full outline-none bg-transparent"
-                          value={item[col] as string | number}
-                          onChange={(e) =>
-                            updateItem(tableIndex, itemIndex, col, e.target.value)
-                          }
-                        />
                       </td>
-                    ))}
-                    <td className="border px-4 py-2 text-right">
-                      <span>€{(item.total || 0).toFixed(2)}</span>
-                    </td>
-                    <td className="border px-4 py-2 text-center">
-                      <button
-                        onClick={() => removeItemFromTable(tableIndex, itemIndex)}
-                        className="text-red-600 font-bold"
-                        type="button"
-                        title="Remove line item"
-                      >
-                        ✕
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div className="flex gap-4 mt-4">
               <button
