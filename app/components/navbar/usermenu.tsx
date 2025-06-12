@@ -74,7 +74,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
         </div>
       </div>
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
+        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-4/5 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer px-4 py-3">
             {(() => {
               if (currentUser && currentUser.plan === "premium") {
@@ -98,6 +98,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     <div className="flex flex-col space-y-1 ml-4">
                       <MenuItem onClick={() => handleMenuItemClick(() => router.push("/create-a-quote"))} label="Create Quote" />
                       <MenuItem onClick={() => handleMenuItemClick(() => router.push("/my-quotes"))} label="My Quotes" />
+                    </div>
+                    <div className="mt-3 mb-1 px-3 text-rose-600 font-semibold uppercase tracking-wide select-none">
+                      Invoicing
+                    </div>
+                    <div className="flex flex-col space-y-1 ml-4">
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push("/create-an-invoice"))} label="Create Invoice" />
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push("/my-invoices"))} label="My Invoices" />
                     </div>
 
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/contact"))} label="Contact Us" />
