@@ -130,6 +130,13 @@ export async function POST(req: Request) {
         }
       });
 
+      await prisma.user.update({
+        where: { id: listing.userId },
+        data: {
+          plan: isCancelled ? 'free' : 'premium'
+        }
+      });
+
       console.log(
         `Subscription updated for listing ${listing.id}, expiresOn: ${
           isCancelled ? new Date(subscription.current_period_end * 1000) : 'null (active)'

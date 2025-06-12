@@ -37,7 +37,8 @@ const page = () => {
         const fetchQuotes = async () => {
             const res = await fetch("/api/myquotes");
             if(!res.ok){
-                throw new Error("Failed to fetch quotes")
+                setLoading(false);
+                return;
             }
             const data = await res.json();
             setQuotes(data);
@@ -52,7 +53,7 @@ const page = () => {
             </div>
         )
     }
-    if(quotes.length === 0){
+    if(!quotes || quotes.length === 0){
         return (
             <div className="font-serif text-2xl text-rose-500 text-center">No Quotes Found</div>
         )

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import useLoginModel from '../hooks/useLoginModel';
+import { set } from 'react-hook-form';
 
 interface LineItem {
   [key: string]: string | number | boolean | undefined;
@@ -33,7 +34,10 @@ const CreateQuotePage = () => {
     const fetchCurrentUser = async () => {
       try {
         const res = await fetch('/api/get-current-user');
-        if (!res.ok) return;
+        if (!res.ok){
+          setLoading(false);
+          return
+        };
         const data = await res.json();
         setCurrentUser(data.data);
         setLoading(false);

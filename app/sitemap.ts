@@ -43,7 +43,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap>{
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email`
         },
         {
-            url: `${process.env.NEXT_PUBLIC_BASE_URL}/resetPasswordForm`
+            url: `${process.env.NEXT_PUBLIC_BASE_URL}/create-a-quote`
+        },
+        {
+            url: `${process.env.NEXT_PUBLIC_BASE_URL}/my-quotes`
         },
         {
             url: `${process.env.NEXT_PUBLIC_BASE_URL}/contact`
