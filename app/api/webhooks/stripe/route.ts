@@ -38,71 +38,76 @@ export async function POST(req: Request) {
       const sessionId = session.id;
       const stripeCustomerId = session.customer as string; // Stripe Customer ID
       // Extract metadata from the session
-      const { tempListingId, userId } = session.metadata || {};
-
-      if (!tempListingId || !sessionId || !userId) {
-        throw new Error('Required metadata is missing from the Stripe session.');
+      const { tempListingId, userId, connected_account_id } = session.metadata || {};
+      if(connected_account_id){
+        console.log('Connected account ID:', connected_account_id);
+        console.log("purchase completed")
       }
-
-      // Retrieve the temporary listing
-      const tempListing = await prisma.tempListing.findUnique({
-        where: { id: tempListingId },
-      });
-
-      if (!tempListing) {
-        throw new Error('Temporary listing not found.');
-      }
-
-      // Determine the plan based on the price ID
-      let plan = 'business'; // Default to 'premium'
-      const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
-
-      for (const item of lineItems.data) {
-        const priceId = item.price?.id;
-        if (priceId === process.env.NEXT_PUBLIC_STRIPE_INDIVIDUAL_PRICE_ID) {
-          plan = 'individual';
-        } else if (priceId === process.env.NEXT_PUBLIC_BUSINESS_MONTHLY_PRICE_ID) {
-          plan = 'business';
+      else{
+        if (!tempListingId || !sessionId || !userId) {
+          throw new Error('Required metadata is missing from the Stripe session.');
         }
-      }
-
-
-      // Create a new active listing
-      const newListing = await prisma.listing.create({
-        data: {
-          category: tempListing.category,
-          imageSrc: tempListing.imageSrc,
-          title: tempListing.title,
-          description: tempListing.description,
-          email: tempListing.email,
-          phone_number: tempListing.phone_number,
-          company_name: tempListing.company_name,
-          street: tempListing.street,
-          town: tempListing.town,
-          city: tempListing.city,
-          county: tempListing.county,
-          country: tempListing.country,
-          is_business: tempListing.is_business,
-          plan: plan, // Use the determined plan
-          isActive: true, // Mark the listing as active
-          userId: tempListing.userId,
-          operationCounties: tempListing.operationCounties,
-          stripeCustomerId: stripeCustomerId, // Store the Stripe Customer ID
-        },
-      });
-      const updateduser = await prisma.user.update({
-        where: { id: userId },
-        data: {
-          plan: 'premium'
+  
+        // Retrieve the temporary listing
+        const tempListing = await prisma.tempListing.findUnique({
+          where: { id: tempListingId },
+        });
+  
+        if (!tempListing) {
+          throw new Error('Temporary listing not found.');
         }
-      });
-
-      // Delete the temporary listing after converting
-      await prisma.tempListing.delete({
-        where: { id: tempListing.id },
-      });
-
-      console.log('Temporary listing deleted successfully.');
+  
+        // Determine the plan based on the price ID
+        let plan = 'business'; // Default to 'premium'
+        const lineItems = await stripe.checkout.sessions.listLineItems(sessionId);
+  
+        for (const item of lineItems.data) {
+          const priceId = item.price?.id;
+          if (priceId === process.env.NEXT_PUBLIC_STRIPE_INDIVIDUAL_PRICE_ID) {
+            plan = 'individual';
+          } else if (priceId === process.env.NEXT_PUBLIC_BUSINESS_MONTHLY_PRICE_ID) {
+            plan = 'business';
+          }
+        }
+  
+  
+        // Create a new active listing
+        const newListing = await prisma.listing.create({
+          data: {
+            category: tempListing.category,
+            imageSrc: tempListing.imageSrc,
+            title: tempListing.title,
+            description: tempListing.description,
+            email: tempListing.email,
+            phone_number: tempListing.phone_number,
+            company_name: tempListing.company_name,
+            street: tempListing.street,
+            town: tempListing.town,
+            city: tempListing.city,
+            county: tempListing.county,
+            country: tempListing.country,
+            is_business: tempListing.is_business,
+            plan: plan, // Use the determined plan
+            isActive: true, // Mark the listing as active
+            userId: tempListing.userId,
+            operationCounties: tempListing.operationCounties,
+            stripeCustomerId: stripeCustomerId, // Store the Stripe Customer ID
+          },
+        });
+        const updateduser = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: 'premium'
+          }
+        });
+  
+        // Delete the temporary listing after converting
+        await prisma.tempListing.delete({
+          where: { id: tempListing.id },
+        });
+  
+        console.log('Temporary listing deleted successfully.');
+      }
     }
 
 
