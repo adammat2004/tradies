@@ -1,11 +1,8 @@
 'use client';
 
-import useServiceModel from '../hooks/useServiceModel';
-import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import useLoginModel from '../hooks/useLoginModel';
-import { set } from 'react-hook-form';
 
 interface LineItem {
   [key: string]: string | number | boolean | undefined;
@@ -23,36 +20,102 @@ interface Note {
   description: string;
 }
 
-const CreateQuotePage = () => {
+interface QuoteData {
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  company: {
+    name: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    county: string;
+    email: string;
+    phone: string;
+  };
+  notes: Note[];
+  tables: Table[];
+}
+
+const EditQuotePage = () => {
+  const params = useParams();
+  const quoteId = params?.quoteid as string
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const serviceModel = useServiceModel();
-  const loginModel = useLoginModel();
 
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const res = await fetch('/api/get-current-user');
-        if (!res.ok){
-          setLoading(false);
-          return
-        };
-        const data = await res.json();
-        setCurrentUser(data.data);
-        setLoading(false);
-      } catch (error) {
-        toast.error('Failed to fetch current user');
-      }
-    };
-    fetchCurrentUser();
-  }, []);
-
+  // Quote data states
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '' });
   const [company, setCompany] = useState({ name: '', address: '', city: '', postalCode: '', county: '', email: '', phone: '' });
   const [notes, setNotes] = useState<Note[]>([]);
   const [tables, setTables] = useState<Table[]>([]);
 
+  // Fetch current user and quote on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch current user
+        const userRes = await fetch('/api/get-current-user');
+        if (!userRes.ok) throw new Error('Failed to fetch user');
+        const userData = await userRes.json();
+        setCurrentUser(userData.data);
+
+        // Fetch existing quote by id
+        const quoteRes = await fetch(`/api/get-quote-by-id/${quoteId}`);
+        if (!quoteRes.ok) throw new Error('Failed to fetch quote');
+        const quoteData = await quoteRes.json();
+        // Set states with fetched quote data
+        setCustomer({
+          name: quoteData.customerName,
+          email: quoteData.customerEmail,
+          phone: quoteData.customerPhone,
+        });
+        setCompany({
+          name: quoteData.companyName,
+          address: quoteData.companyAddress,
+          city: quoteData.companyCity,
+          postalCode: quoteData.companyPostalCode,
+          county: quoteData.companyCounty,
+          email: quoteData.companyEmail,
+          phone: quoteData.companyPhone,
+        });
+
+        setNotes(quoteData.notes);
+        setTables(
+          (quoteData.tables || []).map((table: any) => ({
+            ...table,
+            items: (table.items || []).map((item: any) => ({
+              ...item.data,
+              total: item.data.total || 0,
+              _id: item.id,
+              tableId: item.tableId,
+            })),
+          }))
+        );
+
+        console.log("tables", tables)
+      } catch (error) {
+        toast.error('Failed to load quote or user data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [quoteId]);
+
+  // Functions for notes
+  const addNotes = () => setNotes([...notes, { description: '' }]);
+  const removeNote = (index: number) => setNotes(notes.filter((_, i) => i !== index));
+  const updateNote = (index: number, value: string) => {
+    const updatedNotes = [...notes];
+    updatedNotes[index].description = value;
+    setNotes(updatedNotes);
+  };
+
+  // Functions for tables (same as create)
   const addTable = () => {
     const newTable: Table = {
       title: `Table ${tables.length + 1}`,
@@ -104,7 +167,7 @@ const CreateQuotePage = () => {
 
     // Recalculate total based on multiplier columns
     const item = updatedTables[tableIndex].items[itemIndex];
-    const product = tables[tableIndex].multiplierColumns.reduce((acc, col) => {
+    const product = updatedTables[tableIndex].multiplierColumns.reduce((acc, col) => {
       const num = parseFloat(item[col] as string) || 0;
       return acc * num;
     }, 1);
@@ -113,40 +176,38 @@ const CreateQuotePage = () => {
     setTables(updatedTables);
   };
 
-  const addNotes = () => {
-    setNotes([...notes, { description: '' }]);
-  };
-
+  // Calculate subtotal
   const subtotal = tables.reduce((sum, table) => {
-    return sum + table.items.reduce((itemSum, item) => {
-      return itemSum + (Number(item.total) || 0);
-    }, 0);
+    return sum + table.items.reduce((itemSum, item) => itemSum + (Number(item.total) || 0), 0);
   }, 0);
 
+  // Handle update quote submit
   const handleSubmit = async () => {
-    const quoteData = {
+    const updatedQuote = {
       customer,
       company,
       notes,
       tables,
       subtotal,
       userId: currentUser?.id,
+      id: quoteId, // Include quote ID for update
     };
 
     try {
-      const res = await fetch('/api/create-quote', {
+      const res = await fetch(`/api/update-quote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(quoteData),
+        body: JSON.stringify(updatedQuote),
       });
 
       if (res.ok) {
-        toast.success('Quote created successfully!');
+        toast.success('Quote updated successfully!');
         router.push('/my-quotes');
       } else {
-        toast.error('Failed to create quote.');
+        toast.error('Failed to update quote.');
       }
     } catch (error) {
+      toast.error('An error occurred while updating the quote.');
       console.error(error);
     }
   };
@@ -159,19 +220,17 @@ const CreateQuotePage = () => {
     );
   }
 
-  if (!currentUser && !loading) {
+  if (!currentUser) {
     return (
-      <div>
-        <div className="text-xl font-serif text-center">
-          You must have a service listed to create a quote.
-        </div>
+      <div className="text-xl font-serif text-center">
+        You must be logged in to edit a quote.
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 p-12 space-y-12">
-      <h1 className="text-5xl font-extrabold text-white text-center mb-8 drop-shadow-lg">Create Quote</h1>
+      <h1 className="text-5xl font-extrabold text-white text-center mb-8 drop-shadow-lg">Edit Quote</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
@@ -208,14 +267,10 @@ const CreateQuotePage = () => {
               className="w-full p-3 rounded-lg shadow-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
               placeholder="Note"
               value={note.description}
-              onChange={(e) => {
-                const updatedNotes = [...notes];
-                updatedNotes[index].description = e.target.value;
-                setNotes(updatedNotes);
-              }}
+              onChange={(e) => updateNote(index, e.target.value)}
             />
             <button
-              onClick={() => setNotes(notes.filter((_, i) => i !== index))}
+              onClick={() => removeNote(index)}
               className="text-red-600 font-bold text-2xl hover:text-red-800 transition"
               aria-label="Remove note"
             >
@@ -242,7 +297,7 @@ const CreateQuotePage = () => {
         const isTitleEmpty = table.title.trim() === '';
         return (
           <div key={tableIndex} className="bg-white p-6 rounded-xl shadow space-y-4 overflow-x-auto relative">
-            {/* Table Title with required styling */}
+            {/* Table Title */}
             <input
               className={`text-xl font-semibold w-full border-b p-2 mb-2 focus:outline-none ${
                 isTitleEmpty ? 'border-red-500' : 'border-gray-300'
@@ -255,11 +310,8 @@ const CreateQuotePage = () => {
                 setTables(updatedTables);
               }}
             />
-            {isTitleEmpty && (
-              <p className="text-red-500 text-sm mb-2">Table title is required</p>
-            )}
+            {isTitleEmpty && <p className="text-red-500 text-sm mb-2">Table title is required</p>}
 
-            {/* Remove Table Button */}
             <button
               onClick={() => {
                 const updatedTables = [...tables];
@@ -273,7 +325,6 @@ const CreateQuotePage = () => {
               Remove Table
             </button>
 
-            {/* Multiply Columns Section with remove button */}
             <div className="flex flex-wrap gap-2 items-center mb-4">
               <label className="font-semibold">Multiply Columns:</label>
               {table.multiplierColumns.map((col, i) => (
@@ -324,8 +375,6 @@ const CreateQuotePage = () => {
                 + Add
               </button>
             </div>
-
-            {/* Table Content */}
             <div className='overflow-x-auto'>
               <table className="min-w-[800px] table-auto border">
                 <thead>
@@ -340,13 +389,15 @@ const CreateQuotePage = () => {
                               const updatedColumns = [...table.columns];
                               const oldCol = updatedColumns[colIndex];
                               const newCol = e.target.value;
-                              if (!newCol.trim()) return; // Prevent empty column name
+                              if (!newCol.trim()) return;
                               updatedColumns[colIndex] = newCol;
+
                               const updatedItems = table.items.map((item) => {
                                 const updatedItem = { ...item, [newCol]: item[oldCol] };
                                 delete updatedItem[oldCol];
                                 return updatedItem;
                               });
+
                               const updatedTables = [...tables];
                               updatedTables[tableIndex].columns = updatedColumns;
                               updatedTables[tableIndex].items = updatedItems;
@@ -354,10 +405,7 @@ const CreateQuotePage = () => {
                             }}
                           />
                           <button
-                            onClick={() => {
-                              // Remove column silently (no alert)
-                              removeColumn(tableIndex, col);
-                            }}
+                            onClick={() => removeColumn(tableIndex, col)}
                             className="text-red-500"
                             type="button"
                             title="Remove column"
@@ -412,40 +460,34 @@ const CreateQuotePage = () => {
               >
                 + Add Row
               </button>
-              <input
-                type="text"
-                placeholder="New column name"
-                className="border rounded px-2 py-1"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const input = e.target as HTMLInputElement;
-                    if (input.value.trim()) {
-                      addColumn(tableIndex, input.value.trim());
-                      input.value = '';
-                    }
+              <button
+                onClick={() => {
+                  const newCol = prompt('Enter new column name');
+                  if (newCol && newCol.trim()) {
+                    addColumn(tableIndex, newCol.trim());
                   }
                 }}
-              />
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                type="button"
+              >
+                + Add Column
+              </button>
             </div>
           </div>
         );
       })}
-
-
       <div className="text-right font-extrabold text-2xl text-white drop-shadow-lg">
         Subtotal: €{subtotal.toFixed(2)}
       </div>
 
-      <div className="text-center">
-        <button
-          onClick={handleSubmit}
-          className="bg-purple-700 text-white px-10 py-4 rounded-xl shadow-lg hover:bg-purple-800 transition text-lg font-semibold"
-        >
-          Save Quote
-        </button>
-      </div>
+      <button
+        onClick={handleSubmit}
+        className="bg-purple-900 text-white text-xl rounded-xl py-4 px-8 mt-12 mx-auto block shadow-lg hover:bg-purple-800 transition"
+      >
+        Update Quote
+      </button>
     </div>
   );
 };
 
-export default CreateQuotePage;
+export default EditQuotePage;

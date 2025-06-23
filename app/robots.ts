@@ -9,15 +9,16 @@ export default function robots(): MetadataRoute.Robots {
                     "/",
                     "/jobs",
                     "/contact",
-                    "/create-job-listing/",
-                    "/create-post/"
+                    "/favorites",
+                    "/create-a-quote",
+                    "/my-quotes",
                 ],
                 disallow: [
-                    "/verify-email/",
-                    "/resetPasswordForm/",
-                    "/favorites/",
-                    "/services/",
-                    "/api/",
+                    "/verify-email",
+                    "/resetPasswordForm",
+                    "/services",
+                    "/create-job-listing/",
+                    "/create-post/",
                 ]
             }
         ],

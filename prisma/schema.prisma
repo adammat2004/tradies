@@ -37,6 +37,7 @@ model User {
   posts          Posts[]
   jobs           job[]
   quotes          Quote[]
+  reviews       Reviews[]
   resetPasswordToken String?
   resetPasswordExpires DateTime?
 }
@@ -65,7 +66,7 @@ model Listing {
   title        String
   is_business  Boolean @default(true)
   description  String
-  imageSrc     String
+  imageSrc     String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime? @updatedAt
   category     String[]
@@ -77,24 +78,41 @@ model Listing {
   town         String
   city         String
   county       String
+  stripeCustomerId String? @unique
   country      String
   userId       String    @db.ObjectId
   startDate    DateTime  @default(now())
-  endDate      DateTime?
+  expiresOn    DateTime?
   plan         String    @default("free")
   isActive     Boolean   @default(false)
   posts        Posts[]
-
+  reviews      Reviews[]
   jobs         job[]
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Reviews {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  listingId  String   @db.ObjectId
+  rating     Int      // e.g. 1 to 5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([listingId])
+}
+
 
 model TempListing {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   stripeSessionId String?   @unique
   category        String[]
   is_business     Boolean @default(true)
-  imageSrc        String
+  imageSrc        String?
   title           String
   description     String
   email           String
@@ -187,7 +205,8 @@ model Table {
   title    String
   quoteId  String   @db.ObjectId
   quote    Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-  columns  String[] // NEW: Dynamic columns
+  columns  String[] 
+  multiplierColumns String[]
   items    Item[]
 }
 

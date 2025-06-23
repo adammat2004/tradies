@@ -1,19 +1,17 @@
 import getCurrentUser from '@/app/actions/getCurrentUser';
-import getJobById from '@/app/api/getJobById/route'
+import getJobById from '@/app/api/getJobById/route';
 import EmptyState from '@/app/components/emptyState';
 
 interface IParams {
     joblistingId?: string;
 }
 
-const JobListingPage = async ({params}: {params: IParams}) => {
+const JobListingPage = async ({ params }: { params: IParams }) => {
     const jobListing = await getJobById(params);
     const currentUser = await getCurrentUser();
-    
-    if(!jobListing){
-        return (
-            <EmptyState/>
-        )
+
+    if (!jobListing) {
+        return <EmptyState />;
     }
 
     const getDaysAgo = (createdAt: string | Date): number => {
@@ -25,62 +23,75 @@ const JobListingPage = async ({params}: {params: IParams}) => {
     };
 
     return (
-        <div className="max-w-screen-xl mx-auto p-12 bg-white shadow-xl rounded-lg h-screen">
-            {/* Job Title */}
-            <div className="mb-8">
-                <h1 className="text-5xl font-extrabold text-gray-900">{jobListing.jobTitle}</h1>
+        <div className="max-w-5xl mx-auto px-6 py-12 bg-white shadow-2xl rounded-2xl mt-10 mb-20">
+            {/* Title */}
+            <div className="mb-6">
+                <h1 className="text-4xl sm:text-5xl font-bold text-gray-900">{jobListing.jobTitle}</h1>
             </div>
-            
-            {/* Job Info (Company, Location, Job Type) */}
-            <div className="flex flex-wrap gap-10 mb-8 text-xl text-gray-700">
+
+            {/* Company Info */}
+            <div className="flex flex-wrap gap-6 text-lg text-gray-700 mb-6">
                 <p className="font-semibold">{jobListing.companyName}</p>
+                <span className="text-gray-500">|</span>
                 <p>{jobListing.location}</p>
+                <span className="text-gray-500">|</span>
                 <p>{jobListing.jobType}</p>
             </div>
-            
-            {/* Published Date and Salary */}
-            <div className="flex flex-wrap gap-10 mb-8 text-lg text-gray-600">
+
+            {/* Meta Info */}
+            <div className="flex flex-wrap items-center gap-6 text-md text-gray-600 mb-10">
                 {getDaysAgo(jobListing.createdAt.toString()) === 1 ? (
-                    <p className="text-green-700 font-semibold">Today <span className="bg-green-100 px-2 py-1 rounded-full text-xs">New</span></p>
+                    <p className="text-green-700 font-semibold">
+                        Today <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs ml-1">New</span>
+                    </p>
                 ) : (
                     <p>Published {getDaysAgo(jobListing.createdAt.toString())} days ago</p>
                 )}
-                {jobListing.salary ? <p>💰 {jobListing.salary}</p> : <p>Not Disclosed</p>}
-            </div>
-            
-            {/* Job Description */}
-            <div className="mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4">Job Description</h2>
-                <p className="text-gray-700 text-lg">{jobListing.description}</p>
-            </div>
-
-            {/* Requirements Section */}
-            <div className="mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4">Requirements</h2>
-                <ul className="list-disc pl-8 text-lg text-gray-700">
-                    {jobListing.requirements.map((requirement, index) => (
-                        <li key={index} className="mb-2">{requirement}</li>
-                    ))}
-                </ul>
+                <span className="text-gray-400">|</span>
+                {jobListing.salary ? (
+                    <p>💰 {jobListing.salary}</p>
+                ) : (
+                    <p className="italic text-gray-500">Salary not disclosed</p>
+                )}
             </div>
 
-            {/* Benefits Section */}
-            <div className="mb-8">
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4">Benefits</h2>
-                <ul className="list-disc pl-8 text-lg text-gray-700">
-                    {jobListing.benefits.map((benefit, index) => (
-                        <li key={index} className="mb-2">{benefit}</li>
-                    ))}
-                </ul>
+            {/* Description */}
+            <div className="mb-10">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-3">Job Description</h2>
+                <p className="text-gray-700 leading-relaxed text-lg">{jobListing.description}</p>
             </div>
+
+            {/* Requirements */}
+            {jobListing.requirements && jobListing.requirements.length > 0 && (
+                <div className="mb-10">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-3">Requirements</h2>
+                    <ul className="list-disc pl-6 text-lg text-gray-700 space-y-2">
+                        {jobListing.requirements.map((req, idx) => (
+                            <li key={idx}>{req}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* Benefits */}
+            {jobListing.benefits && jobListing.benefits.length > 0 && (
+                <div className="mb-10">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-3">Benefits</h2>
+                    <ul className="list-disc pl-6 text-lg text-gray-700 space-y-2">
+                        {jobListing.benefits.map((benefit, idx) => (
+                            <li key={idx}>{benefit}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {/* Contact Info */}
-            <div>
-                <h2 className="text-3xl font-semibold text-gray-800 mb-4">Contact Information</h2>
+            <div className="pt-6 border-t border-gray-200">
+                <h2 className="text-2xl font-semibold text-gray-800 mt-6 mb-3">Contact Information</h2>
                 <p className="text-lg text-gray-700">{jobListing.contactInfo}</p>
             </div>
         </div>
     );
-}
+};
 
 export default JobListingPage;

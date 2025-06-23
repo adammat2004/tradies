@@ -79,6 +79,14 @@ export async function POST(req: Request) {
         userId: userId.toString(),
         tempListingId: tempListingId.toString(),
       },
+      subscription_data: {
+        trial_period_days: 60,
+        metadata: {
+          userId: userId.toString(),
+          tempListingId: tempListingId.toString(),
+        },
+      },
+      customer_email: userEmail,
     });
     // Update the tempListing with the Stripe session ID
     await prisma.tempListing.update({

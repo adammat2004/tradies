@@ -37,9 +37,9 @@ const ServiceClient: React.FC<ServiceClientProps> = ({
                         currentUser={currentUser}
                         town={listing.town}
                     />
-                    <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
+                    <div className="md:gap-10 mt-6">
                         <ServiceInfo 
-                            id={listing.id}
+                            listingId={listing.id}
                             user={listing.user}
                             city={listing.city}
                             category={category}

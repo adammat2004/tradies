@@ -36,6 +36,7 @@ export async function POST(req: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
       const sessionId = session.id;
+      const stripeCustomerId = session.customer as string; // Stripe Customer ID
       // Extract metadata from the session
       const { tempListingId, userId } = session.metadata || {};
 
@@ -86,7 +87,14 @@ export async function POST(req: Request) {
           isActive: true, // Mark the listing as active
           userId: tempListing.userId,
           operationCounties: tempListing.operationCounties,
+          stripeCustomerId: stripeCustomerId, // Store the Stripe Customer ID
         },
+      });
+      const updateduser = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          plan: 'premium'
+        }
       });
 
       // Delete the temporary listing after converting
@@ -95,9 +103,47 @@ export async function POST(req: Request) {
       });
 
       console.log('Temporary listing deleted successfully.');
-    } else {
-      console.log(`Unhandled event type: ${event.type}`);
     }
+
+
+   if (event.type === 'customer.subscription.updated') {
+      const subscription = event.data.object as Stripe.Subscription;
+
+      const listing = await prisma.listing.findFirst({
+        where: { stripeCustomerId: subscription.customer as string }
+      });
+
+      console.log('Listing found:', listing);
+
+      if (!listing) {
+        throw new Error('Listing not found.');
+      }
+
+      const isCancelled = subscription.cancel_at_period_end || subscription.status === 'canceled';
+
+      await prisma.listing.update({
+        where: { id: listing.id },
+        data: {
+          expiresOn: isCancelled
+            ? new Date(subscription.current_period_end * 1000)
+            : null
+        }
+      });
+
+      await prisma.user.update({
+        where: { id: listing.userId },
+        data: {
+          plan: isCancelled ? 'free' : 'premium'
+        }
+      });
+
+      console.log(
+        `Subscription updated for listing ${listing.id}, expiresOn: ${
+          isCancelled ? new Date(subscription.current_period_end * 1000) : 'null (active)'
+        }`
+      );
+    }
+
     if(event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object as Stripe.Subscription;
       const subscriptionId = subscription.id;
@@ -111,8 +157,26 @@ export async function POST(req: Request) {
       await prisma.listing.delete({
         where: { id: listing.id },
       });
-    } else {
-      console.log(`Unhandled event type: ${event.type}`);}
+      const listingCount = await prisma.listing.count({
+        where: { userId: userId }
+      });
+      if(listingCount > 0) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: 'premium'
+          }
+        });
+      } else {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            plan: 'free'
+          }
+        });
+      }
+      
+    }
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error: any) {

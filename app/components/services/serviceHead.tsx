@@ -58,7 +58,7 @@ const ServiceHead: React.FC<ServiceHeadProps> = ({
 
     return (
         <>
-            <Heading title={company_name} subtitle={`${city}, ${town}`} />
+            <Heading title={company_name} subtitle={`${town}, ${county}`} />
             <div className="w-full h-[60vh] overflow-hidden relative rounded-xl">
                 <Image alt="Profile image" src={image} fill className="object-cover w-full" />
                 <div className="absolute top-5 right-5">
