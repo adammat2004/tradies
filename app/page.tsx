@@ -18,23 +18,31 @@ export async function generateMetadata({ searchParams }: HomeProps) {
   let title = "Tradesmen in Ireland - Tradeez";
   let description = "Find skilled and reliable tradesmen in Ireland with Tradeez.ie. Connect with professionals across various trades to meet your specific needs.";
 
-  // Modify the title and description based on the searchParams
+  let canonicalUrl = "https://www.tradeez.ie";
+
   if (category && county) {
     title = `${category} services in ${county} - Tradeez`;
     description = `Find ${category} services located in ${county}.`;
+    canonicalUrl += `/?category=${encodeURIComponent(category)}&county=${encodeURIComponent(county)}`;
   } else if (category) {
     title = `${category} services - Tradeez`;
     description = `Browse the best ${category} contractors in Ireland.`;
+    canonicalUrl += `/?category=${encodeURIComponent(category)}`;
   } else if (county) {
     title = `Tradesmen in ${county} - Tradeez`;
     description = `Find tradesmen available in ${county}.`;
+    canonicalUrl += `/?county=${encodeURIComponent(county)}`;
   }
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
+
 
 const Home = async ({ searchParams }: HomeProps) => {
   const listings = await getListings(searchParams);
