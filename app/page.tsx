@@ -15,7 +15,7 @@ interface HomeProps{
 export async function generateMetadata({ searchParams }: HomeProps) {
   const { category, county } = searchParams;
 
-  let title = "Tradesmen in Ireland - Tradeez";
+  let title = "Find Trusted Tradesmen in Ireland | Tradeez";
   let description = "Find skilled and reliable tradesmen in Ireland with Tradeez.ie. Connect with professionals across various trades to meet your specific needs.";
 
   let canonicalUrl = "https://www.tradeez.ie";
