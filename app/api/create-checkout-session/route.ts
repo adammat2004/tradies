@@ -1,8 +1,5 @@
 import { stripe } from "../../libs/stripe";
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../libs/prismadb";
-import { connect } from "http2";
-import { connected } from "process";
 
 export async function POST(req: NextRequest) {
     try {
