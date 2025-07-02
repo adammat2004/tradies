@@ -10,6 +10,7 @@ import ServiceModel from "./components/models/serviceModel";
 import SearchModel from "./components/models/searchModel";
 import { Suspense } from "react";
 import JobSearchModel from "./components/models/jobSearchModel";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,6 +43,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ToasterProvider />
+        <Analytics />
         <Suspense fallback={<div>Loading...</div>}>
           <ServiceModel />
           <SearchModel />
