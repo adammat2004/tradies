@@ -51,7 +51,7 @@ const RegisterModel = () => {
                 email: data.email,
                 password: data.password,
                 redirect: false, // Prevent full-page reload
-                callbackUrl: "/dashboard", // Redirect after login
+                callbackUrl: "/", // Redirect after login
             });
 
             if (signInResponse?.error) {
@@ -82,7 +82,7 @@ const RegisterModel = () => {
   const bodyContent = (
     <div className='flex flex-col gap-4'>
       	<Heading 
-          title='Welcome to Tradies'
+          title='Welcome to Tradeez'
           subtitle='Create an account!'
         />
         <Input 
