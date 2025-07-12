@@ -1,0 +1,18 @@
+[
+  {
+    "name": "Bob the Builder",
+    "bio": "Experienced in home renovations, carpentry, and roofing."
+  },
+  {
+    "name": "Alice the Painter",
+    "bio": "Specializes in interior and exterior painting with a keen eye for detail."
+  },
+  {
+    "name": "John the Plumber",
+    "bio": "Expert in pipe leaks, bathroom installations, and boilers."
+  },
+  {
+    "name": "Sally the Spark",
+    "bio": "Electrician with 10+ years of experience in lighting and wiring."
+ }
+]
