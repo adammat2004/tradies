@@ -9,7 +9,7 @@ async function run() {
   const enhanced = [];
 
   for (const t of raw) {
-    const input = `Name: ${t.name}\nBio: ${t.bio}`;
+    const input = `Name: ${t.name}\nTrade: ${t.trade}\nExperience: ${t.experience}\nRecent Jobs: ${t.recentJobs.join(', ')}\n`;
 
     const res = await openai.embeddings.create({
       model: 'text-embedding-3-small',
