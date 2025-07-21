@@ -88,7 +88,8 @@ model Listing {
   posts        Posts[]
   reviews      Reviews[]
   jobs         job[]
-  embedding     TradesmanProfileEmbedding?
+  embeddingInput String?
+  skillsEmbedding Json?
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -225,12 +226,4 @@ model Note {
   quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 }
 
-model TradesmanProfileEmbedding {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  listingId      String   @unique @db.ObjectId
-  embeddingInput String   // The combined text from questionnaire
-  embedding      Json       // OpenAI embedding vector
-  createdAt      DateTime @default(now())
 
-  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-}

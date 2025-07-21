@@ -23,3 +23,14 @@ export type SafeJob = Omit<
     createdAt: String;
     updatedAt: Date;
 }
+
+export type safeRecommendation = Omit<
+    Listing,
+    "createdAt"
+> & {
+    createdAt: string;  
+    similarity: number;
+    _id: {
+        $oid: string;
+    }
+}

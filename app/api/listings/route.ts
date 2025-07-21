@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 import { stripe } from '@/app/libs/stripe';
 import getCurrentUser from '@/app/actions/getCurrentUser';
-
+import {OpenAI} from 'openai';
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 export async function POST(req: Request) {
   const currentUser = await getCurrentUser();
 
@@ -32,8 +33,60 @@ export async function POST(req: Request) {
     if (!category || !email || !operationCounties || !title || !description || !phone_number || !company_name || !street || !town || !city || !county || !country ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+    const embeddingInput = [
+      title,
+      description,
+      `Categories: ${category.join(", ")}`,
+      `Company: ${company_name}`,
+      `Address: ${street}, ${town}, ${city}, ${county}, ${country}`,
+      `Service areas: ${operationCounties.join(", ")}`,
+    ].join(". ");
+    const listing = await prisma.listing.create({
+      data: {
+        category,
+        imageSrc,
+        title,
+        description,
+        email,
+        phone_number,
+        company_name,
+        street,
+        town,
+        city,
+        county,
+        is_business,
+        operationCounties,
+        country,
+        plan: plan || 'premium',
+        stripeCustomerId: "2",
+        embeddingInput,
+        isActive: true, // Default to false until payment is confirmed
+        userId: currentUser.id,
+      },
+    });
+
+    const embedRes = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: embeddingInput,
+    });
+    const skillsEmbedding = embedRes.data[0].embedding as number[];
+
+    const updated = await prisma.listing.update({
+      where: { id: listing.id },
+      data: { skillsEmbedding },
+    });
+    const updateduser = await prisma.user.update({
+      where: { id: currentUser.id },
+      data: {
+        plan: 'premium'
+      }
+    });
+
+    return NextResponse.json({ listing: updated }, { status: 200 });
+
+
     // Create the temporary listing
-    const tempListing = await prisma.tempListing.create({
+    {/*const tempListing = await prisma.tempListing.create({
       data: {
         category,
         imageSrc,
@@ -94,7 +147,8 @@ export async function POST(req: Request) {
       data: { stripeSessionId: session.id },
     });
 
-    return NextResponse.json({ sessionUrl: session.url }, { status: 200 });
+    return NextResponse.json({ sessionUrl: session.url }, { status: 200 });*/}
+
   } catch (error) {
     console.error('Error creating checkout session:', error);
     return NextResponse.json({ error: 'Failed to create temp listing' }, { status: 500 });
