@@ -78,7 +78,7 @@ model Listing {
   town         String
   city         String
   county       String
-  stripeCustomerId String? @unique
+  //stripeCustomerId String? @unique
   country      String
   userId       String    @db.ObjectId
   startDate    DateTime  @default(now())

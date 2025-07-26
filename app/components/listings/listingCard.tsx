@@ -61,7 +61,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 </div>
 
                 <div className="font-semibold text-lg">
-                    {data?.county}, {data?.country}
+                    {data?.town}, {data?.county}
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { SafeUser, safeRecommendation } from "@/app/types";
 import Image from "next/image";
@@ -19,7 +19,7 @@ const RecommendedListingCard: React.FC<ListingCardProps> = ({
 }) => {
     const router = useRouter();
     const id = data._id.$oid;
-    const imageUrl = `${data.imageSrc}?q_auto,f_auto,w_auto,dpr_auto`
+    const imageUrl = `${data.imageSrc}?q_auto,f_auto,w_auto,dpr_auto`;
     return (
         <div onClick={() => router.push(`/listings/${id}`)} className="col-span-1 cursor-pointer group">
             <div className="flex flex-col gap-2 w-full">
@@ -60,7 +60,7 @@ const RecommendedListingCard: React.FC<ListingCardProps> = ({
                 </div>
 
                 <div className="font-semibold text-lg">
-                    {data?.county}, {data?.country}
+                    {data?.town}, {data?.county}
                 </div>
             </div>
         </div>

@@ -72,7 +72,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
       }
       const data = await response.json();
       setPar2Value(data.description); // Update the state with the new description
-      setIsEditing(false); // Close the editor
+      setIsEditing2(false); // Close the editor
       router.refresh();
     } catch (error) {
         console.error("Error updating description:", error);
@@ -119,7 +119,8 @@ const AboutPage: React.FC<AboutPageProps> = ({
       const data = await response.json();
       window.location.href = data.url; // Redirect to the Stripe portal
     } catch (error) {
-      toast.error('Failed to create portal session. Please try again later.');
+      toast.error('Service unavaiable. Please try again later.');
+      //toast.error('Failed to create portal session. Please try again later.');
     }
   }
   return (

@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         operationCounties,
         country,
         plan: plan || 'premium',
-        stripeCustomerId: "2",
+        //stripeCustomerId,
         embeddingInput,
         isActive: true, // Default to false until payment is confirmed
         userId: currentUser.id,

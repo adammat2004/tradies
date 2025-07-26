@@ -107,7 +107,7 @@ const ServiceModel = () => {
         axios.post('/api/listings', data)
         .then((response) => {
             // Assuming the response contains the session ID or relevant session data
-            const { sessionUrl } = response.data; // This should be the session ID from the Stripe session
+            {/*const { sessionUrl } = response.data; // This should be the session ID from the Stripe session
     
             if (sessionUrl) {
                 // Once the listing is created and the session ID is returned, open the Stripe checkout page
@@ -115,7 +115,7 @@ const ServiceModel = () => {
                 window.open(sessionUrl, '_blank');
             } else {
                 toast.error("Session ID is missing, unable to redirect to Stripe Checkout.");
-            }
+            }*/}
     
             toast.success("Listing created!");
             router.refresh();
@@ -152,37 +152,44 @@ const ServiceModel = () => {
     let bodyContent = (
         <div className="flex flex-col gap-8">
             <Heading
-                title="List your service!"
-                subtitle="Get noticed online and attract more clients with ease"
+                title="List Your Service & Get AI-Powered Recommendations"
+                subtitle="Our AI recommends you to the right customers—effortlessly"
             />
+
             <section className="space-y-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Promote Your Services</h2>
-                    <p className="text-lg text-gray-700">
-                    As a tradesman, having a strong online presence is key to growing your business. 
-                    By listing your services on <strong>Tradeez</strong>, you can:
-                    </p>
-                    <ul className="list-disc list-inside text-lg text-gray-700 mt-2">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    Promote Your Services
+                </h2>
+                <p className="text-lg text-gray-700">
+                    Tradeez uses AI to analyze your skills and match you only with customers
+                    seeking your expertise. By listing here, you’ll:
+                </p>
+                <ul className="list-disc list-inside text-lg text-gray-700 mt-2">
                     <li>Showcase your services and past projects</li>
-                    <li>Advertise job opportunities at your company</li>
-                    <li>Use built-in quoting tools to send quotes in minutes</li>
-                    </ul>
+                    <li>Get recommended to customers based on your expertise</li>
+                    <li>Send quotes in minutes with our built-in quoting tools</li>
+                </ul>
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Stay in Control</h2>
-                    <p className="text-lg text-gray-700">
-                    Easily update your business details at any time. Whether it’s changing your contact info,
-                    adding new services, or showcasing recent work, everything is fully editable—so you're always
-                    in control of your brand.
-                    </p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    Stay in Control
+                </h2>
+                <p className="text-lg text-gray-700">
+                    Update your profile anytime—the AI will instantly re-evaluate and
+                    recommend you to new customers.
+                </p>
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">Get Started for Free</h2>
-                    <p className="text-lg text-gray-700">
-                    Join us today and enjoy a <strong>60-day free trial</strong> of our premium plan.
-                    </p>
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    Free for First 100 Users
+                </h2>
+                <p className="text-lg text-gray-700">
+                    Be among the first 100 users to list your service and enjoy free access
+                    while we improve our AI models.
+                </p>
                 </div>
             </section>
         </div>
@@ -211,7 +218,7 @@ const ServiceModel = () => {
                             </div>,
                         isSelected: is_business,
                         onClick: () => setCustomValue("is_business", true),
-                        price: "€15.99/month",
+                        //price: "€15.99/month",
                         },
                         {
                         label: "Individual",
@@ -227,9 +234,9 @@ const ServiceModel = () => {
                         </div>,//"Perfect for solo tradesmen showcasing services.",
                         isSelected: !is_business,
                         onClick: () => setCustomValue("is_business", false),
-                        price: "€11.99/month",
+                        //price: "€11.99/month",
                         },
-                    ].map(({ label, description, isSelected, onClick, price }) => (
+                    ].map(({ label, description, isSelected, onClick }) => (
                         <button
                         key={label}
                         onClick={onClick}
@@ -243,11 +250,11 @@ const ServiceModel = () => {
                         <div className="flex justify-between items-center mb-1">
                             <span className="text-xl font-semibold">{label}</span>
                             <span className="bg-white text-rose-600 text-xs font-bold px-2 py-0.5 rounded-full">
-                            60-day free trial
+                            First 100 Users Free
                             </span>
                         </div>
                         <div className="text-sm opacity-80 mb-2">{description}</div>
-                        <div className="font-medium">Price: {price}</div>
+                        {/*<div className="font-medium">Price: {price}</div>*/}
                         </button>
                     ))}
                 </div>
