@@ -463,17 +463,20 @@ const ServiceModel = () => {
         bodyContent = (
             <div className="flex flex-col gap-8">
                 <Heading 
-                    title="Pay and create your account"
+                    title="Create your account"
                     subtitle="You're almost there"
                 />
-                <div className="text-lg text-gray-700">
+                {/*<div className="text-lg text-gray-700">
                     Clicking the button below will take you to the payment page where you can pay for your listing.
                 </div>
                 <div className="text-lg text-gray-700">
                     All our payments are processed securely by Stripe.
+                </div>*/}
+                <div className="text-lg text-gray-700">
+                    Clicking the create button below will create your listing. You can then visit the my service page to view and make changes to your listing.
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                    By clicking the payment button, you accept our&nbsp;
+                    By clicking the create button, you accept our&nbsp;
                     <a href="/terms-and-conditions" className="underline hover:text-gray-700" target="_blank" rel="noopener noreferrer">
                         Terms and Conditions
                     </a>
