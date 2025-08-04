@@ -88,6 +88,7 @@ model Listing {
   posts        Posts[]
   reviews      Reviews[]
   jobs         job[]
+  embeddingParts Json?
   embeddingInput String?
   skillsEmbedding Json?
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)

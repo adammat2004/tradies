@@ -6,6 +6,7 @@ import { IconType } from "react-icons";
 import AboutPage from "./servicepages/aboutPage";
 import ProjectsPage from "./servicepages/projectsPage";
 import JobsPage from "./servicepages/jobsPage";
+import EmbeddingsPage from "./servicepages/embeddingsPage";
 
 
 interface ListingInfoProps {
@@ -56,9 +57,8 @@ interface Post {
 enum Page {
     About = 0,
     Projects = 1,
-    Contact = 2,
-    Jobs = 3,
-    Reviews = 4,
+    Jobs = 2,
+    Info = 3,
 }
 
 const ServiceInfo: React.FC<ListingInfoProps> = ({
@@ -133,6 +133,13 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
             />
         )
     }
+    if(page === Page.Info){
+        bodyContent = (
+            <EmbeddingsPage
+                listingId={listingId}
+            />
+        )
+    }
     return (
          <div className="mx-auto max-w-screen-lg px-4 md:px-6 lg:px-8 py-6">
             <div className="w-full overflow-x-hidden">
@@ -142,6 +149,7 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
                         { name: "About", value: Page.About },
                         { name: "Projects", value: Page.Projects },
                         { name: "Jobs", value: Page.Jobs },
+                        { name: "Info", value: Page.Info },
                     ].map(({ name, value }) => (
                         <button
                         key={name}

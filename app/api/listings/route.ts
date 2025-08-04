@@ -41,6 +41,18 @@ export async function POST(req: Request) {
       `Address: ${street}, ${town}, ${city}, ${county}, ${country}`,
       `Service areas: ${operationCounties.join(", ")}`,
     ].join(". ");
+    const embeddingParts = {
+      "description1": title,
+      "description2": description,
+      "categories": category,
+      "company": company_name,
+      "street": street, 
+      "town": town, 
+      "city": city, 
+      "county": county, 
+      "country": country,
+      "serviceAreas": operationCounties,
+    };
     const listing = await prisma.listing.create({
       data: {
         category,
@@ -59,6 +71,7 @@ export async function POST(req: Request) {
         country,
         plan: plan || 'premium',
         //stripeCustomerId,
+        embeddingParts: embeddingParts,
         embeddingInput,
         isActive: true, // Default to false until payment is confirmed
         userId: currentUser.id,
