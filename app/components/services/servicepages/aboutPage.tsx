@@ -38,7 +38,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
   const handleParagraph1Change = async (value: string) => {
     try {
       const response = await fetch("/api/changeDescription2", {
-          method: "POST",
+          method: "PATCH",
           headers: {
               "Content-Type": "application/json",
           },
@@ -60,7 +60,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
   const handleParagraph2Change = async (value: string) => {
     try {
       const response = await fetch("/api/changeDescription", {
-          method: "POST",
+          method: "PATCH",
           headers: {
               "Content-Type": "application/json",
           },
@@ -71,7 +71,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
           throw new Error("Failed to update description");
       }
       const data = await response.json();
-      setPar2Value(data.description); // Update the state with the new description
+      setPar2Value(data.title); // Update the state with the new description
       setIsEditing2(false); // Close the editor
       router.refresh();
     } catch (error) {
@@ -82,7 +82,7 @@ const AboutPage: React.FC<AboutPageProps> = ({
   const handleCategoryChange = async (newCategories: string[], categoryValues: Category[]) => {
     try {
       const response = await fetch("/api/changeCategory", {
-          method: "POST",
+          method: "PATCH",
           headers: {
               "Content-Type": "application/json",
           },
