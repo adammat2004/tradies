@@ -29,7 +29,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
                 <div className="flex flex-col gap-6">
                     <ListingHead
                         title={listing.title}
-                        imageSrc={listing.imageSrc}
+                        imageSrc={listing.imageSrc ? listing.imageSrc : '/placeholder.png'}
                         id={listing.id}
                         city={listing.city}
                         county={listing.county}
@@ -51,6 +51,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
                             listingId={listing.id}
                             category={category}
                             description={listing.description}
+                            is_business={listing.is_business}
                         />
                     </div>
                 </div>

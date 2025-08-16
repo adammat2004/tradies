@@ -29,7 +29,7 @@ const ServiceClient: React.FC<ServiceClientProps> = ({
                 <div className="flex flex-col gap-6">
                     <ServiceHead
                         title={listing.title}
-                        imageSrc={listing.imageSrc}
+                        imageSrc={listing.imageSrc ? listing.imageSrc : '/placeholder.png'}
                         id={listing.id}
                         city={listing.city}
                         county={listing.county}
@@ -51,6 +51,7 @@ const ServiceClient: React.FC<ServiceClientProps> = ({
                             phone={listing.phone_number}
                             email={listing.email}
                             title={listing.title}
+                            is_business={listing.is_business}
                         />
                     </div>
                 </div>

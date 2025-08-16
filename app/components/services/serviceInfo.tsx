@@ -21,6 +21,7 @@ interface ListingInfoProps {
     email: string;
     city: string;
     listingId: string;
+    is_business: boolean;
     category: {
         icon: IconType;
         label: string;
@@ -74,6 +75,7 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
     phone,
     email,
     listingId,
+    is_business
 }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [jobs, setJobs] = useState<JobListing[]>([]);
@@ -144,26 +146,48 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
          <div className="mx-auto max-w-screen-lg px-4 md:px-6 lg:px-8 py-6">
             <div className="w-full overflow-x-hidden">
                 <div className="bg-white shadow-md">
-                    <nav className="flex justify-around md:flex-row items-center py-4 px-6 gap-2 md:gap-8 text-lg font-medium font-serif">
-                    {[
-                        { name: "About", value: Page.About },
-                        { name: "Projects", value: Page.Projects },
-                        { name: "Jobs", value: Page.Jobs },
-                        { name: "Info", value: Page.Info },
-                    ].map(({ name, value }) => (
-                        <button
-                        key={name}
-                        onClick={() => setPage(value)}
-                        className={`relative px-3 py-1 transition-all duration-300 hover:text-rose-500 ${
-                            page === value
-                            ? "text-rose-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-3/4 after:h-1 after:bg-rose-500 after:rounded-full"
-                            : "text-gray-600"
-                        }`}
-                        >
-                        {name}
-                        </button>
-                    ))}
-                    </nav>
+                    {is_business ? (
+                        <nav className="flex justify-around md:flex-row items-center py-4 px-6 gap-2 md:gap-8 text-lg font-medium font-serif">
+                                {[
+                                    { name: "About", value: Page.About },
+                                    { name: "Projects", value: Page.Projects },
+                                    { name: "Jobs", value: Page.Jobs },
+                                    { name: "Info", value: Page.Info },
+                                ].map(({ name, value }) => (
+                                    <button
+                                    key={name}
+                                    onClick={() => setPage(value)}
+                                    className={`relative px-3 py-1 transition-all duration-300 hover:text-rose-500 ${
+                                        page === value
+                                        ? "text-rose-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-3/4 after:h-1 after:bg-rose-500 after:rounded-full"
+                                        : "text-gray-600"
+                                    }`}
+                                    >
+                                    {name}
+                                </button>
+                            ))}
+                         </nav>
+                    ) : (
+                       <nav className="flex justify-around md:flex-row items-center py-4 px-6 gap-2 md:gap-8 text-lg font-medium font-serif">
+                            {[
+                                { name: "About", value: Page.About },
+                                { name: "Projects", value: Page.Projects },
+                                { name: "Info", value: Page.Info },
+                            ].map(({ name, value }) => (
+                                <button
+                                key={name}
+                                onClick={() => setPage(value)}
+                                className={`relative px-3 py-1 transition-all duration-300 hover:text-rose-500 ${
+                                    page === value
+                                    ? "text-rose-500 font-semibold after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-3/4 after:h-1 after:bg-rose-500 after:rounded-full"
+                                    : "text-gray-600"
+                                }`}
+                                >
+                                {name}
+                                </button>
+                            ))}
+                        </nav> 
+                    )}
                 </div>
             </div>
             <div>
