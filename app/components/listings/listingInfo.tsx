@@ -131,8 +131,7 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
     if(page === Page.Contact){
         bodyContent = (
             <ContactPage 
-                companyEmail={email}
-                companyPhone={phone}
+                listingId={listingId}
             />
         )
     }

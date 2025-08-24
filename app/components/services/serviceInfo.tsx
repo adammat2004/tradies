@@ -7,6 +7,8 @@ import AboutPage from "./servicepages/aboutPage";
 import ProjectsPage from "./servicepages/projectsPage";
 import JobsPage from "./servicepages/jobsPage";
 import EmbeddingsPage from "./servicepages/embeddingsPage";
+import ContactPage from "./servicepages/contactPage";
+import ProviderSchedulePage from "./servicepages/contactPage";
 
 
 interface ListingInfoProps {
@@ -58,8 +60,9 @@ interface Post {
 enum Page {
     About = 0,
     Projects = 1,
-    Jobs = 2,
-    Info = 3,
+    Bookings = 2,
+    Jobs = 3,
+    Info = 4,
 }
 
 const ServiceInfo: React.FC<ListingInfoProps> = ({
@@ -127,6 +130,15 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
             />
         )
     }
+    if(page === Page.Bookings){
+        bodyContent = (
+            <ProviderSchedulePage
+                listingId={listingId}
+                user={user}
+                category={category}        
+            />
+        )
+    }
     if(page === Page.Jobs){
         bodyContent = (
             <JobsPage 
@@ -151,6 +163,7 @@ const ServiceInfo: React.FC<ListingInfoProps> = ({
                                 {[
                                     { name: "About", value: Page.About },
                                     { name: "Projects", value: Page.Projects },
+                                    { name: "Bookings", value: Page.Bookings },
                                     { name: "Jobs", value: Page.Jobs },
                                     { name: "Info", value: Page.Info },
                                 ].map(({ name, value }) => (
