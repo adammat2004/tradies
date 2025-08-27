@@ -15,6 +15,221 @@ type Service = {
   calloutFee?: number | null;
 };
 
+
+/** ---------- Availability Calendar ---------- */
+type AvailabilityCalendarProps = {
+  rules: Rule[];
+  exceptions: Exception[];
+  selectedService: Service | null;
+  windows: PreferredWindow[];
+  setWindows: React.Dispatch<React.SetStateAction<PreferredWindow[]>>;
+};
+
+const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
+  rules,
+  exceptions,
+  selectedService,
+  windows,
+  setWindows,
+}) => {
+  const [monthCursor, setMonthCursor] = useState(() => {
+    const d = new Date();
+    d.setDate(1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const durationMin = Math.max(15, selectedService?.durationMin || 60);
+  const step = 30;
+
+  function startOfMonth(d: Date) {
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  }
+  function endOfMonth(d: Date) {
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  }
+  function startOfWeek(d: Date) {
+    const out = new Date(d);
+    out.setDate(d.getDate() - d.getDay()); // Sun start
+    out.setHours(0, 0, 0, 0);
+    return out;
+  }
+  function addDays(d: Date, days: number) {
+    const out = new Date(d);
+    out.setDate(out.getDate() + days);
+    return out;
+  }
+  function sameDay(a: Date, b: Date) {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  }
+
+  // Compute all slot starts for a given date based on rules/exceptions
+  const getSlotsForDay = React.useCallback((day: Date) => {
+    if (!selectedService || rules.length === 0) return [] as { start: string; end: string }[];
+
+    const now = new Date();
+    const wd = weekdayKey(day);
+    const todaysRules = rules.filter((r) => bydayFromRRule(r.rrule).includes(wd));
+    if (todaysRules.length === 0) return [];
+
+    const slots: { start: string; end: string }[] = [];
+    for (const r of todaysRules) {
+      const startMin = minutesFrom(r.startTime);
+      const endMin = minutesFrom(r.endTime);
+
+      const start = new Date(day);
+      start.setHours(Math.floor(startMin / 60), startMin % 60, 0, 0);
+
+      const end = new Date(day);
+      end.setHours(Math.floor(endMin / 60), endMin % 60, 0, 0);
+
+      let cursor = ceilToStep(new Date(Math.max(start.getTime(), now.getTime())), step);
+      while (cursor.getTime() + durationMin * 60000 <= end.getTime()) {
+        const e = new Date(cursor.getTime() + durationMin * 60000);
+        if (!withinException(cursor, e, exceptions)) {
+          slots.push({ start: toLocalISO(cursor), end: toLocalISO(e) });
+        }
+        cursor = new Date(cursor.getTime() + step * 60000);
+      }
+    }
+    return slots;
+  }, [rules, exceptions, selectedService, step, durationMin]);
+
+
+  const month = monthCursor;
+  const first = startOfMonth(month);
+  const last = endOfMonth(month);
+  const gridStart = startOfWeek(first);
+  const days: Date[] = [];
+  for (let i = 0; i < 42; i++) days.push(addDays(gridStart, i)); // 6 rows x 7 days
+
+  const today = new Date();
+
+  const addSuggestion = (s: { start: string; end: string }) => {
+    if (windows.length >= 3) return;
+    const emptyIdx = windows.findIndex((w) => !w.start || !w.end);
+    if (emptyIdx !== -1) {
+      setWindows((ws) => ws.map((w, i) => (i === emptyIdx ? { start: s.start, end: s.end } : w)));
+    } else {
+      setWindows((ws) => [...ws, { start: s.start, end: s.end }]);
+    }
+  };
+
+  return (
+    <div className="mt-3 border rounded-lg p-3">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-sm font-medium">
+          {month.toLocaleString(undefined, { month: "long", year: "numeric" })}
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="px-2 py-1 rounded border"
+            onClick={() => setMonthCursor((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
+            aria-label="Previous month"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            className="px-2 py-1 rounded border"
+            onClick={() => setMonthCursor((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1))}
+            aria-label="Next month"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
+      {/* Weekday labels */}
+      <div className="grid grid-cols-7 text-[11px] text-gray-500 mb-1">
+        {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
+          <div key={d} className="text-center">{d}</div>
+        ))}
+      </div>
+
+      {/* Calendar grid */}
+      <div className="grid grid-cols-7 gap-[6px]">
+        {days.map((d, i) => {
+          const inMonth = d.getMonth() === month.getMonth();
+          const isPastDay = d < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+          const slots = inMonth && !isPastDay ? getSlotsForDay(d) : [];
+          const available = slots.length > 0;
+
+          const selected = selectedDay && sameDay(selectedDay, d);
+
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => {
+                if (!available) return;
+                setSelectedDay(d);
+              }}
+              className={[
+                "h-16 rounded-lg border flex flex-col items-center justify-center gap-1",
+                inMonth ? "bg-white" : "bg-gray-50",
+                isPastDay ? "opacity-40 cursor-not-allowed" : available ? "hover:bg-gray-50 cursor-pointer" : "opacity-60 cursor-not-allowed",
+                selected ? "ring-2 ring-black" : "",
+              ].join(" ")}
+              disabled={!available}
+              title={
+                available
+                  ? `${slots.length} slot${slots.length === 1 ? "" : "s"} available`
+                  : isPastDay
+                  ? "Past date"
+                  : "No availability"
+              }
+            >
+              <div className={`text-sm ${inMonth ? "text-gray-900" : "text-gray-400"}`}>{d.getDate()}</div>
+              {/* availability indicator: like Airbnb price dot/stripe */}
+              <div className={`h-1 w-8 rounded ${available ? "bg-emerald-500" : "bg-gray-200"}`} />
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Slot list for the selected day */}
+      <div className="mt-3">
+        {selectedDay ? (
+          (() => {
+            const slots = getSlotsForDay(selectedDay);
+            return slots.length ? (
+              <>
+                <div className="text-xs text-gray-600 mb-2">
+                  {selectedDay.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })} — pick a time:
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {slots.slice(0, 24).map((s, idx) => (
+                    <button
+                      key={s.start + idx}
+                      type="button"
+                      onClick={() => addSuggestion(s)}
+                      className="px-3 py-1 text-sm rounded-full border hover:bg-gray-50"
+                      title={`${s.start} → ${s.end}`}
+                    >
+                      {new Date(s.start).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                    </button>
+                  ))}
+                </div>
+                {slots.length > 24 && (
+                  <div className="text-[11px] text-gray-500 mt-1">Showing first 24 options</div>
+                )}
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">No times available for this day.</div>
+            );
+          })()
+        ) : (
+          <div className="text-xs text-gray-500">Select a day to see available times.</div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
 type PreferredWindow = { start: string; end: string };
 
 type Rule = { rrule: string; startTime: string; endTime: string; timezone: string };
@@ -216,7 +431,20 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
 
       {/* Suggestions */}
       <div className="mt-2">
-        <div className="text-xs text-gray-600 mb-1">
+        {loading ? (
+          <div className="text-sm text-gray-500">Loading availability…</div>
+        ) : err ? (
+          <div className="text-sm text-red-600">{err}</div>
+        ) : (
+          <AvailabilityCalendar
+            rules={rules}
+            exceptions={exceptions}
+            selectedService={selectedService}
+            windows={windows}
+            setWindows={setWindows}
+          />
+        )}
+        {/*<div className="text-xs text-gray-600 mb-1">
           Suggested slots based on provider’s hours
           {selectedService ? ` and ${selectedService.durationMin} min` : ""}:
         </div>
@@ -240,7 +468,7 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
               </button>
             ))}
           </div>
-        )}
+        )}*/}
       </div>
 
       {/* Manual pickers */}
@@ -564,7 +792,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
       {/* Photos (stub) */}
       <div className="mb-6">
         <label className="block text-sm font-medium">Photos (optional)</label>
-        <div className="text-xs text-gray-500 mb-2">You can wire this to your uploads later; we’ll submit an empty array for now.</div>
+        <div className="text-xs text-gray-500 mb-2">Unavailable for now.</div>
         <div className="border rounded p-3 text-gray-500 text-sm">Uploads coming soon…</div>
       </div>
 

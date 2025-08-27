@@ -9,6 +9,7 @@ import { SafeUser } from '@/app/types'
 import { signOut } from 'next-auth/react'
 import useServiceModel from '@/app/hooks/useServiceModel'
 import { useRouter } from 'next/navigation'
+import { NextResponse } from 'next/server'
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -39,6 +40,23 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     setIsOpen(false);
     callback();
   };
+  const handleWorkMode = () => {
+    try {
+      fetch(`/api/mode?userId=${currentUser?.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mode: 'work' }),
+      }).then(() => {
+        router.push('/work')
+      }).then(() => {
+        router.refresh();
+      });
+    } catch (error) {
+      NextResponse.json({ error: 'Failed to switch to work mode' }, { status: 500 });
+    }
+  }
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -57,12 +75,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   return (
     <div className='relative' ref={menuRef}>
       <div className='flex flex-row items-center gap-3'>
-        <div 
-          onClick={onList} 
-          className='hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer'
-        >
-          List Your Service
-        </div>
+        {currentUser?.plan === 'premium' ? (
+            <div 
+              onClick={handleWorkMode} 
+              className='text-rose-600 hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer'
+            >
+              Change To Work Mode
+            </div>
+          ) : (
+            <div 
+              onClick={onList} 
+              className='hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer'
+            >
+              List Your Service
+            </div>
+        )}
         <div 
           onClick={toggleOpen} 
           className='p-4 md:py-1 md:px-2 border-[1px] border-neutral-200 flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition'
@@ -90,7 +117,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     </div>
                     <div className='flex flex-col space-y-1 ml-4'>
                       <MenuItem onClick={() => handleMenuItemClick(() => router.push("/services"))} label="My Service" />
-                      <MenuItem onClick={() => handleMenuItemClick(serviceModel.onOpen)} label="Add Service" />
+                      <MenuItem onClick={() => handleMenuItemClick(() => router.push('/work'))} label="Work Mode" />
                     </div>
                     <div className="mt-3 mb-1 px-3 text-rose-600 font-semibold uppercase tracking-wide select-none">
                       Quotation

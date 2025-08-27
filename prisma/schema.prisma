@@ -18,6 +18,10 @@ enum Plan {
   premium
 }
 
+enum Mode {
+  basic
+  work
+}
 model User {
   id             String        @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
@@ -30,6 +34,7 @@ model User {
   updatedAt      DateTime      @updatedAt
   favoriteIds    String[]      @db.ObjectId
   plan           Plan          @default(free)
+  mode           Mode          @default(basic)
   customerId     String? // stripe ID, will be needed for deleting subscriptions
   accounts       Account[]
   listings       Listing[]
@@ -180,7 +185,7 @@ model Request {
   pictures    String[]
   budgetMin   Float?
   budgetMax   Float?
-  status      String         @default("pending") // pending | declined | accepted | converted
+  status      String         @default("pending") // pending | declined | accepted
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

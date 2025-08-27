@@ -396,6 +396,12 @@ function AvailabilityPanel({ listingId, timezone }: { listingId: string | null; 
   const [endAt, setEndAt] = useState("");
   const [reason, setReason] = useState("");
 
+  function hasDay(rrule: string, day: string) {
+    const m = rrule.match(/(?:^|;)BYDAY=([A-Z,]+)/);
+    if (!m) return false;
+    return m[1].split(',').includes(day);
+  }
+
   const weekdays = useMemo(
     () => [
       { key: "MO", label: "Mon" },
@@ -426,14 +432,17 @@ function AvailabilityPanel({ listingId, timezone }: { listingId: string | null; 
   }, [listingId]);
 
   function toggleDay(day: string) {
-    const exists = rules.find((r) => r.rrule.includes(day));
+    const exists = rules.find((r) => hasDay(r.rrule, day));
     if (exists) {
-      setRules((prev) => prev.filter((r) => !r.rrule.includes(day)));
+      setRules((prev) => prev.filter((r) => !hasDay(r.rrule, day)));
+      console.log("Removed", rules);
     } else {
       setRules((prev) => [
         ...prev,
         { rrule: `FREQ=WEEKLY;BYDAY=${day}`, startTime: "08:00", endTime: "17:00", timezone },
       ]);
+      console.log("Rules", rules);
+      console.log("Added", day);
     }
   }
 
@@ -487,7 +496,7 @@ function AvailabilityPanel({ listingId, timezone }: { listingId: string | null; 
         <div className="font-medium mb-3">Weekly Hours</div>
         <div className="space-y-2">
           {weekdays.map((w) => {
-            const r = rules.find((rr) => rr.rrule.includes(w.key));
+            const r = rules.find((rr) => hasDay(rr.rrule, w.key));
             return (
               <div key={w.key} className="grid grid-cols-5 gap-3 items-center">
                 <label className="col-span-1 flex items-center gap-2">

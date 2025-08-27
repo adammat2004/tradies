@@ -8,6 +8,7 @@ import EmptyState from "./components/emptyState";
 import ListingCard from "./components/listings/listingCard";
 import RemoveFilterButton from "./components/removeFilterButton";
 import RecommenderForm from "./components/recommenderForm";
+import { redirect } from "next/navigation";
 
 interface HomeProps{
   searchParams: IListingsParams
@@ -48,6 +49,10 @@ export async function generateMetadata({ searchParams }: HomeProps) {
 const Home = async ({ searchParams }: HomeProps) => {
   const listings = await getListings(searchParams);
   const currentUser = await getCurrentUser();
+ 
+  if(currentUser && currentUser.mode === 'work'){
+    redirect('/work');
+  }
 
   if(listings.length === 0){
     return (

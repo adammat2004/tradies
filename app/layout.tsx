@@ -42,21 +42,21 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ToasterProvider />
-        <Analytics />
-        <Suspense fallback={<div>Loading...</div>}>
-          <ServiceModel />
-          <SearchModel />
-          <JobSearchModel />
-        </Suspense>
-        <LoginModel />
-        <RegisterModel />
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar currentUser={currentUser}/>
-        </Suspense>
+          <ToasterProvider />
+          <Analytics />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ServiceModel />
+            <SearchModel />
+            <JobSearchModel />
+          </Suspense>
+          <LoginModel />
+          <RegisterModel />
+          <Suspense fallback={<div>Loading...</div>}>
+            <Navbar currentUser={currentUser}/>
+          </Suspense>
           <div className="pb-20 pt-32">
-        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        </div>
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          </div>
       </body>
     </html>
   );
