@@ -638,7 +638,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
           .map((w) => ({ start: new Date(w.start).toISOString(), end: new Date(w.end).toISOString() })),
       };
 
-      const res = await fetch("/api/requests", {
+      const res = await fetch("/api/create-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

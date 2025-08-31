@@ -24,7 +24,7 @@ export default function WorkInfoSideTabs() {
   const [active, setActive] = useState<WorkPage>(WorkPage.Requests);
   const [counts, setCounts] = useState<Counts>({});
   const [collapsed, setCollapsed] = useState(false); // sidebar collapse (md+)
-
+  const [listingId, setListingId] = useState<string | undefined>(undefined);
   // Fetch current user
   useEffect(() => {
     let canceled = false;
@@ -58,12 +58,29 @@ export default function WorkInfoSideTabs() {
     if (!currentUser || currentUser.mode !== "work") router.replace("/");
   }, [loading, currentUser, router]);
 
+  useEffect(() => {
+    try {
+      const getListingId = async () => {
+        const res = await fetch("/api/provider/get-listing-id", { cache: "no-store" });
+        if (!res.ok) return;
+        const j = await res.json();
+        if (j?.listingId) {
+          setListingId(j.listingId);
+        }
+      }
+      getListingId()
+    } catch (error) {
+      toast.error("Failed to fetch listing ID");
+    }
+  },[currentUser])
   // Load counts for badges
   useEffect(() => {
+    if (!listingId) return;
+    if (loading) return;
     let canceled = false;
     (async () => {
       try {
-        const r = await fetch("/api/provider/requests/counts", { cache: "no-store" });
+        const r = await fetch(`/api/provider/request-count?listingId=${listingId}`, { cache: "no-store" });
         if (!r.ok) return;
         const j = await r.json();
         if (!canceled) setCounts(j || {});
@@ -72,7 +89,7 @@ export default function WorkInfoSideTabs() {
     return () => {
       canceled = true;
     };
-  }, []);
+  }, [listingId, loading]);
 
   if (loading) {
     return <div className="h-[60vh] grid place-items-center text-gray-500">Loading…</div>;
@@ -93,7 +110,7 @@ export default function WorkInfoSideTabs() {
     >
       {/* MAIN CONTENT */}
       <div className="min-h-[60vh]">
-        {active === WorkPage.Requests && <RequestsPage />}
+        {active === WorkPage.Requests && <RequestsPage listingId={listingId}/>}
         {active === WorkPage.Today && (
           <div className="border rounded-lg p-6 text-gray-600">Today view coming soon…</div>
         )}

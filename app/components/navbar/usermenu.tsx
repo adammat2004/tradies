@@ -117,7 +117,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     </div>
                     <div className='flex flex-col space-y-1 ml-4'>
                       <MenuItem onClick={() => handleMenuItemClick(() => router.push("/services"))} label="My Service" />
-                      <MenuItem onClick={() => handleMenuItemClick(() => router.push('/work'))} label="Work Mode" />
+                      <MenuItem onClick={handleWorkMode} label="Work Mode" />
                     </div>
                     <div className="mt-3 mb-1 px-3 text-rose-600 font-semibold uppercase tracking-wide select-none">
                       Quotation

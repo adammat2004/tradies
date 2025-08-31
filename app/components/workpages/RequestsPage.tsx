@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type RequestRow = {
   id: string;
@@ -13,7 +14,7 @@ type RequestRow = {
 };
 
 const FILTERS = [
-  { key: "submitted", label: "New" },
+  { key: "pending", label: "New" },
   { key: "provider_review", label: "In review" },
   { key: "awaiting_customer", label: "Awaiting customer" },
   { key: "accepted", label: "Accepted" },
@@ -24,18 +25,21 @@ const FILTERS = [
 export default function RequestsPage({ listingId }: { listingId?: string }) {
   const [filter, setFilter] = useState(FILTERS[0].key);
   const [items, setItems] = useState<RequestRow[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function load() {
     setLoading(true);
     try {
-      const url = new URL("/api/provider/requests", window.location.origin);
-      url.searchParams.set("status", filter);
-      if (listingId) url.searchParams.set("listingId", listingId);
-      const r = await fetch(url.toString(), { cache: "no-store" });
-      const j = await r.json();
-      setItems(j.requests || []);
-    } finally {
+      const res = await fetch(`/api/provider/fetch-requests?listingId=${listingId}`);
+      if(!res.ok){
+        toast.error("Failed to fetch requests");
+        return
+      }
+      const data = await res.json();
+      setItems(data);
+      setLoading(false);
+    } catch(error){
+      toast.error("Failed to fetch requests");
       setLoading(false);
     }
   }
@@ -78,9 +82,9 @@ export default function RequestsPage({ listingId }: { listingId?: string }) {
                   </div>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <Link href={`/work/requests/${r.id}`} className="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-sm">
+                  {/*<Link href={`/work/requests/${r.id}`} className="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-sm">
                     View
-                  </Link>
+                  </Link>*/}
                   <Link href={`/work/requests/${r.id}`} className="px-3 py-2 rounded bg-black text-white text-sm">
                     Manage
                   </Link>
