@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <>
-      {currentUser?.mode === 'basic' ? (
+      {currentUser?.mode === 'basic' || !currentUser ? (
         <div className='absolute w-full bg-white z-10 shadow-sm'>
           <div className='py-4 border-b-[1px]'>
               <Container>

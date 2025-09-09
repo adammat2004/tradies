@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 /** ---------- Types ---------- */
 type PricingModel = "hourly" | "quote_only";
@@ -308,8 +309,8 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
       setErr(null);
       try {
         const [r, e] = await Promise.all([
-          fetch(`/api/provider/availability/rules?listingId=${listingId}`, { cache: "no-store" }),
-          fetch(`/api/provider/availability/exceptions?listingId=${listingId}`, { cache: "no-store" }),
+          fetch(`/api/provider/availability-client/rules?listingId=${listingId}`, { cache: "no-store" }),
+          fetch(`/api/provider/availability-client/exceptions?listingId=${listingId}`, { cache: "no-store" }),
         ]);
         if (!r.ok) throw new Error("Failed to load weekly hours");
         if (!e.ok) throw new Error("Failed to load time off");
@@ -644,6 +645,9 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         body: JSON.stringify(payload),
       });
 
+      if(res.status === 401){
+        toast.error("You must be logged in as a customer to submit a request.");
+      }
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
         throw new Error(j?.error || "Failed to submit request");
