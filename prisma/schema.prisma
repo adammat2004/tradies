@@ -181,7 +181,8 @@ model Request {
   customerId  String         @db.ObjectId
   title       String?
   description String
-  address     String?
+  county      String
+  address     String
   pictures    String[]
   budgetMin   Float?
   budgetMax   Float?

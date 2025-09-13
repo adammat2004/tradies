@@ -548,6 +548,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
+  const [county, setCounty] = useState("");
   const [budgetMin, setBudgetMin] = useState<string>("");
   const [budgetMax, setBudgetMax] = useState<string>("");
 
@@ -630,6 +631,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         serviceId: serviceId || undefined,
         title: title || undefined,
         description,
+        county: county,
         address: address || undefined,
         pictures: [], // TODO: wire uploads
         budgetMin: budgetMin !== "" ? Number(budgetMin) : undefined,
@@ -728,7 +730,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
 
       {/* Job details */}
       <div className="mb-6 space-y-2">
-        <label className="block text-sm font-medium">Job title (optional)</label>
+        <label className="block text-sm font-medium">Job title</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={title}
@@ -747,8 +749,18 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         />
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1">County</label>
+        <input
+          className="w-full border rounded px-3 py-2"
+          value={county}
+          onChange={(e) => setCounty(e.target.value)}
+          placeholder="What County Do You Live In?"
+        />
+      </div>
+
       <div className="mb-6 space-y-2">
-        <label className="block text-sm font-medium">Job address (optional)</label>
+        <label className="block text-sm font-medium">Eircode</label>
         <input
           className="w-full border rounded px-3 py-2"
           value={address}

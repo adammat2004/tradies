@@ -29,6 +29,9 @@ export async function GET(req: Request){
                         name: true,
                     }
                 },
+                windows: true,
+                service: true,
+                listing: true
             }
         })
         return NextResponse.json(requests);

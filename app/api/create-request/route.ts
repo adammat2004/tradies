@@ -8,7 +8,8 @@ type ReqBody = {
   serviceId?: string;
   title?: string;
   description?: string;
-  address?: string;
+  address: string;
+  county: string;
   pictures?: string[];
   budgetMin?: number;
   budgetMax?: number;
@@ -17,7 +18,6 @@ type ReqBody = {
 
 export async function POST(req: Request) {
   try {
-    // ---- Auth: customer must be logged in ----
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -27,7 +27,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ---- Parse body ----
     const body = (await req.json().catch(() => null)) as ReqBody | null;
     if (!body || typeof body !== "object") {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
@@ -39,13 +38,13 @@ export async function POST(req: Request) {
       title,
       description,
       address,
+      county,
       pictures = [],
       budgetMin,
       budgetMax,
       preferredWindows = [],
     } = body;
 
-    // ---- Validation ----
     if (!listingId || typeof listingId !== "string") {
       return NextResponse.json({ error: "listingId is required" }, { status: 400 });
     }
@@ -53,7 +52,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "description is required" }, { status: 400 });
     }
 
-    // check listing exists
     const listing = await prisma.listing.findUnique({
       where: { id: listingId },
       select: { id: true },
@@ -100,7 +98,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid budget range" }, { status: 400 });
     }
 
-    // ---- Create request + windows (atomic) ----
     const created = await prisma.request.create({
       data: {
         listingId,
@@ -108,7 +105,8 @@ export async function POST(req: Request) {
         customerId,
         title: title?.trim() || null,
         description: description.trim(),
-        address: address?.trim() || null,
+        address: address.trim(),
+        county: county.trim(),
         pictures: Array.isArray(pictures) ? pictures.slice(0, 20) : [],
         budgetMin: typeof budgetMin === "number" ? budgetMin : null,
         budgetMax: typeof budgetMax === "number" ? budgetMax : null,
@@ -120,7 +118,7 @@ export async function POST(req: Request) {
       include: { windows: true },
     });
 
-    // (Optional) notify provider via email/webhook here
+    // notify provider via email here
 
     return NextResponse.json({ request: created }, { status: 201 });
   } catch (e) {
