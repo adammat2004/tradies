@@ -14,8 +14,8 @@ export async function GET(req: Request){
             userId: listingId
         },
     })
-    if(listings.length === 0){
+    {/*if(listings.length === 0){
         return NextResponse.json({error: 'No listings found'}, {status: 404});
-    }
+    }*/}
     return NextResponse.json({data: currentUser}, {status: 200});
 }

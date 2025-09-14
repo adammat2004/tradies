@@ -10,6 +10,7 @@ import { signOut } from 'next-auth/react'
 import useServiceModel from '@/app/hooks/useServiceModel'
 import { useRouter } from 'next/navigation'
 import { NextResponse } from 'next/server'
+import { Menu } from 'lucide-react'
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -136,6 +137,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                 return (
                   <>
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/"))} label="Home" />
+                    <MenuItem onClick={() => handleMenuItemClick(() => router.push("/favorites"))} label="My Favorites" />
+                    <MenuItem onClick={() => handleMenuItemClick(() => router.push("/job-requests"))} label="My Requests" />
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/jobs"))} label="Job Listings" />
                     <MenuItem onClick={() => handleMenuItemClick(serviceModel.onOpen)} label="List My Service" />
                     <MenuItem onClick={() => handleMenuItemClick(() => router.push("/contact"))} label="Contact Us" />

@@ -183,6 +183,9 @@ model Request {
   description String
   county      String
   address     String
+  customerName String
+  customerEmail String?
+  customerPhone String
   pictures    String[]
   budgetMin   Float?
   budgetMax   Float?

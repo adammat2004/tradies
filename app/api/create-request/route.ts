@@ -14,6 +14,9 @@ type ReqBody = {
   budgetMin?: number;
   budgetMax?: number;
   preferredWindows?: { start: string; end: string }[];
+  customerName: string;
+  customerEmail?: string;
+  customerPhone: string;
 };
 
 export async function POST(req: Request) {
@@ -43,6 +46,9 @@ export async function POST(req: Request) {
       budgetMin,
       budgetMax,
       preferredWindows = [],
+      customerName,
+      customerEmail,
+      customerPhone,
     } = body;
 
     if (!listingId || typeof listingId !== "string") {
@@ -111,6 +117,9 @@ export async function POST(req: Request) {
         budgetMin: typeof budgetMin === "number" ? budgetMin : null,
         budgetMax: typeof budgetMax === "number" ? budgetMax : null,
         status: "pending",
+        customerName: customerName.trim(),
+        customerEmail: customerEmail?.trim() || null,
+        customerPhone: customerPhone.trim(),
         windows: windowsData.length
           ? { create: windowsData.map((w) => ({ startAt: w.startAt, endAt: w.endAt })) }
           : undefined,

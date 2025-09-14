@@ -6,6 +6,7 @@ import React, { useEffect, useMemo, useState } from "react";
  * Single-file React component for displaying job requests.
  * - No external UI libraries; just React and a tiny CSS block below.
  * - Mirrors your Prisma schema for Request and RequestWindow.
+ * - UPDATED: shows customerName, customerEmail, customerPhone with tasteful styling.
  */
 
 // ——— Types mirroring your Prisma schema ———
@@ -36,6 +37,10 @@ export type Request = {
   status: "pending" | "declined" | "accepted" | string;
   createdAt: string | Date;
   updatedAt: string | Date;
+  // ✨ NEW flat contact fields from submission
+  customerName?: string | null;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
   // Optional relation payloads for display-only convenience
   listing?: Listing;
   service?: { id: string; name?: string | null } | null;
@@ -76,6 +81,7 @@ const styles = `
   --green: #10b98133; --green-text: #065f46; --green-border:#10b98155;
   --amber: #f59e0b33; --amber-text: #7c2d12; --amber-border:#f59e0b55;
   --rose: #f43f5e33; --rose-text:#7f1d1d; --rose-border:#f43f5e55;
+  --blue: #3b82f633; --blue-text:#1e40af; --blue-border:#3b82f655;
 }
 * { box-sizing: border-box }
 body { background: var(--bg); color: var(--text); }
@@ -100,17 +106,22 @@ body { background: var(--bg); color: var(--text); }
 .sidebar { display:flex; flex-direction:column; gap:16px; }
 .row { display:flex; align-items:center; gap:8px; }
 .customer { display:flex; align-items:center; gap:12px; }
-.avatar { width:36px; height:36px; border-radius:50%; background:#e5e7eb; display:grid; place-items:center; font-weight:600; }
+.avatar { width:44px; height:44px; border-radius:50%; background:#eef2ff; color:#1e3a8a; display:grid; place-items:center; font-weight:700; letter-spacing:.2px; }
 .actions { display:flex; gap:8px; }
 .button { appearance:none; border:1px solid var(--border); background:#111827; color:white; padding:8px 12px; border-radius:10px; font-weight:600; cursor:pointer; }
 .button.secondary { background:#f9fafb; color:#111827; }
 .small { font-size: 13px; color: var(--muted); }
-.hr { height:1px; background:var(--border); margin: 8px 0; }
+.hr { height:1px; background: var(--border); margin: 10px 0; }
 // dialog
 .lightbox { position:fixed; inset:0; background: rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index: 50; padding: 24px; }
 .lightbox-inner { max-width: 960px; width: 100%; }
 .lightbox img { width:100%; height:auto; border-radius: 12px; box-shadow: var(--shadow); }
 .lightbox .close { position:absolute; top:16px; right:16px; background:#111827; color:white; border:none; border-radius:999px; width:36px; height:36px; display:grid; place-items:center; cursor:pointer; }
+
+/* ✨ Contact chips */
+.contact { display:grid; gap:8px; }
+.contact .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:1px dashed var(--blue-border); background: var(--blue); color: var(--blue-text); border-radius: 999px; font-size: 12px; text-decoration:none; word-break: break-all; }
+.contact .chip svg { opacity:.75 }
 `;
 
 // ——— In-file tiny icon helpers (inline SVG) ———
@@ -127,31 +138,55 @@ const Icon = {
   x: (props: React.HTMLAttributes<SVGElement>) => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   ),
+  mail: (props: React.HTMLAttributes<SVGElement>) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+  ),
+  phone: (props: React.HTMLAttributes<SVGElement>) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.54 2.61a2 2 0 0 1-.45 2L8.09 9.91a16 16 0 0 0 6 6l1.58-1.11a2 2 0 0 1 2-.18c.84.24 1.71.42 2.61.54A2 2 0 0 1 22 16.92z"/></svg>
+  ),
 };
 
 // ——— Core: RequestCard ———
 export function RequestCard({
   request,
-  onAccept,
-  onDecline,
-  onEdit,
-  onDelete,
-  onMessage,
-  currency = "EUR",
 }: {
   request: Request;
-  onAccept?: (req: Request) => void;
-  onDecline?: (req: Request) => void;
-  onEdit?: (req: Request) => void;
-  onDelete?: (req: Request) => void;
-  onMessage?: (req: Request) => void;
-  currency?: string;
 }) {
   const [lightbox, setLightbox] = useState<string | null>(null);
-
+  const currency = "EUR";
   const min = formatCurrency(request.budgetMin, currency);
   const max = formatCurrency(request.budgetMax, currency);
   const budget = min || max ? [min ?? "—", max ?? "—"].join(" – ") : "Not specified";
+
+  const onAccept = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await fetch(`/api/provider/accept-request?requestId=${request.id}`, { method: 'POST' });
+      window.location.reload();
+    } catch (error) {
+      NextResponse.json({ error: 'Failed to accept request' }, { status: 500 });
+    }
+  };
+
+  const onDecline = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await fetch(`/api/provider/reject-request?requestId=${request.id}`, { method: 'POST' });
+      window.location.reload();
+    } catch (error) {
+      NextResponse.json({ error: 'Failed to decline request' }, { status: 500 });
+    }
+  };
+  const displayName = request.customerName || request.customer?.name || "Unknown Customer";
+  const initials = displayName
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  // Ellipsize helper
+  const ellipsize = (s?: string | null, max = 32) => (s && s.length > max ? s.slice(0, max - 1) + "…" : s || "—");
 
   return (
     <div className="card">
@@ -166,7 +201,7 @@ export function RequestCard({
             <span className="row"><Icon.clock /> Updated {formatDateTime(request.updatedAt)}</span>
           </div>
         </div>
-        <div className="actions">
+        {/*<div className="actions">
           {onMessage && (
             <button className="button secondary" onClick={() => onMessage?.(request)}>Message</button>
           )}
@@ -176,7 +211,7 @@ export function RequestCard({
           {onDelete && (
             <button className="button secondary" onClick={() => onDelete?.(request)}>Delete</button>
           )}
-        </div>
+        </div>*/}
       </div>
 
       <div className="card-content">
@@ -192,7 +227,7 @@ export function RequestCard({
             <div className="kv">
               <div className="label">Location</div>
               <div className="row" style={{ fontWeight: 600 }}>
-                <Icon.pin /> {`${request.county} - ${request.address}` || "Not provided"}
+                <Icon.pin /> {(request.county || "—") + (request.address ? ` • ${request.address}` : "")}
               </div>
             </div>
           </div>
@@ -207,15 +242,21 @@ export function RequestCard({
           <div className="kv" style={{ display: "grid", gap: 12 }}>
             <div style={{ fontSize: 14, fontWeight: 700 }}>Customer</div>
             <div className="customer">
-              <div className="avatar">
-                {(request.customer?.name || "?").slice(0, 2).toUpperCase()}
-              </div>
+              <div className="avatar" aria-hidden>{initials || "?"}</div>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontWeight: 600, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
-                  {request.customer?.name || "Unknown Customer"}
+                  {ellipsize(displayName, 40)}
                 </div>
                 <div className="small" title={request.customerId}>ID: {request.customerId}</div>
               </div>
+            </div>
+            <div className="contact">
+              <a className="chip" href={request.customerEmail ? `mailto:${request.customerEmail}` : undefined} onClick={(e) => { if (!request.customerEmail) e.preventDefault(); }} title={request.customerEmail || "No email provided"}>
+                <Icon.mail /> {ellipsize(request.customerEmail, 40)}
+              </a>
+              <a className="chip" href={request.customerPhone ? `tel:${request.customerPhone}` : undefined} onClick={(e) => { if (!request.customerPhone) e.preventDefault(); }} title={request.customerPhone || "No phone provided"}>
+                <Icon.phone /> {ellipsize(request.customerPhone, 28)}
+              </a>
             </div>
           </div>
 
@@ -226,8 +267,8 @@ export function RequestCard({
           </div>
 
           <div className="actions">
-            {onAccept && <button className="button" onClick={() => onAccept?.(request)}>Accept</button>}
-            {onDecline && <button className="button secondary" onClick={() => onDecline?.(request)}>Decline</button>}
+            <button className="button" onClick={onAccept}>Accept</button>
+            <button className="button secondary" onClick={onDecline}>Decline</button>
           </div>
         </aside>
       </div>
@@ -324,8 +365,6 @@ export default function DemoRequestList({
     fetchRequests();
   }, [listingId]);
 
-  console.log("requests", requests);
-
   const handleWorkMode = () => {
       try {
         fetch(`/api/mode?userId=${userId}`, {
@@ -344,6 +383,29 @@ export default function DemoRequestList({
       }
     }
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return requests;
+    return requests.filter((r) => {
+      const hay = [
+        r.title,
+        r.description,
+        r.address,
+        r.county,
+        r.customerName,
+        r.customerEmail,
+        r.customerPhone,
+        r.service?.name,
+        r.listing?.company_name,
+        r.status,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }, [query, requests]);
+
   return (
     <div className="req-container">
       <header className="mb-4 flex items-center justify-between">
@@ -357,7 +419,7 @@ export default function DemoRequestList({
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search requests…"
+          placeholder="Search requests… (coming soon)"
           style={{
             flex: 1,
             border: "1px solid var(--border)",
@@ -369,15 +431,10 @@ export default function DemoRequestList({
       </div>
 
       <div style={{ display: "grid", gap: 20 }}>
-        {requests.map((req) => (
+        {filtered.map((req) => (
           <RequestCard
             key={req.id}
             request={req}
-            onAccept={(r) => console.log("accept", r.id)}
-            onDecline={(r) => console.log("decline", r.id)}
-            onEdit={(r) => console.log("edit", r.id)}
-            onDelete={(r) => console.log("delete", r.id)}
-            onMessage={(r) => console.log("message", r.id)}
           />
         ))}
       </div>

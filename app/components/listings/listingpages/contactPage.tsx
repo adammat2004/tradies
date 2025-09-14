@@ -16,7 +16,6 @@ type Service = {
   calloutFee?: number | null;
 };
 
-
 /** ---------- Availability Calendar ---------- */
 type AvailabilityCalendarProps = {
   rules: Rule[];
@@ -95,7 +94,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     }
     return slots;
   }, [rules, exceptions, selectedService, step, durationMin]);
-
 
   const month = monthCursor;
   const first = startOfMonth(month);
@@ -430,7 +428,7 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
         )}
       </div>
 
-      {/* Suggestions */}
+      {/* Suggestions & Calendar */}
       <div className="mt-2">
         {loading ? (
           <div className="text-sm text-gray-500">Loading availability…</div>
@@ -445,31 +443,6 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
             setWindows={setWindows}
           />
         )}
-        {/*<div className="text-xs text-gray-600 mb-1">
-          Suggested slots based on provider’s hours
-          {selectedService ? ` and ${selectedService.durationMin} min` : ""}:
-        </div>
-        {loading ? (
-          <div className="text-sm text-gray-500">Loading availability…</div>
-        ) : err ? (
-          <div className="text-sm text-red-600">{err}</div>
-        ) : suggestions.length === 0 ? (
-          <div className="text-sm text-gray-500">No suggestions found in the next two weeks—pick any window below.</div>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {suggestions.map((s, i) => (
-              <button
-                key={`${s.start}-${i}`}
-                type="button"
-                onClick={() => addSuggestion(s)}
-                className="px-2 py-1 text-xs rounded border hover:bg-gray-50"
-                title={`${s.start} → ${s.end}`}
-              >
-                {formatRange(s.start, s.end)}
-              </button>
-            ))}
-          </div>
-        )}*/}
       </div>
 
       {/* Manual pickers */}
@@ -523,12 +496,7 @@ interface ContactPageProps {
 }
 
 /**
- * ContactPage: Customer "Request to Book" form
- * - Picks a service (loads provider services)
- * - Adds job description, address, photos (stub), optional budget
- * - Up to 3 preferred date/time windows (smart suggestions)
- * - If service is hourly, shows a live estimate (duration * hourly + callout)
- * - Submits to POST /api/requests
+ * ContactPage: Customer "Request to Book" form (with customer info fields)
  */
 const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) => {
   // --- Resolve listingId ---
@@ -543,6 +511,16 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
   // --- Form state ---
   const [services, setServices] = useState<Service[]>([]);
   const [serviceId, setServiceId] = useState<string>("");
+
+  // ✨ NEW: customer details
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+
+  // validators (simple + permissive for intl numbers)
+  const isValidEmail = (s: string) => /\S+@\S+\.\S+/.test(s);
+  const isValidPhone = (s: string) => s.replace(/\D/g, "").length >= 7;
+
   const selectedService = useMemo(() => services.find((s) => s.id === serviceId) || null, [services, serviceId]);
 
   const [title, setTitle] = useState("");
@@ -608,7 +586,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
     [windows]
   );
 
-  const canSubmit = !!listingId && !!description.trim() && hasValidWindow && (!selectedService || !!serviceId);
+  const canSubmit = !!listingId && !!description.trim() && hasValidWindow && (!selectedService || !!serviceId) && !!customerName.trim() && isValidEmail(customerEmail) && isValidPhone(customerPhone);
 
   // --- Submit handler ---
   const submit = async () => {
@@ -620,7 +598,11 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
       return;
     }
     if (!canSubmit) {
-      setError("Please fill in the required fields and at least one preferred time window.");
+      let msg = "Please fill in the required fields and at least one preferred time window.";
+      if (!customerName.trim()) msg = "Please enter your name.";
+      else if (!isValidEmail(customerEmail)) msg = "Please enter a valid email address.";
+      else if (!isValidPhone(customerPhone)) msg = "Please enter a valid phone number.";
+      setError(msg);
       return;
     }
 
@@ -639,6 +621,10 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         preferredWindows: windows
           .filter((w) => w.start && w.end)
           .map((w) => ({ start: new Date(w.start).toISOString(), end: new Date(w.end).toISOString() })),
+
+        customerName,
+        customerEmail,
+        customerPhone,
       };
 
       const res = await fetch("/api/create-request", {
@@ -667,7 +653,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto px-3 md:px-0">
       <h2 className="text-2xl font-semibold mb-2">Request a Booking</h2>
       <p className="text-sm text-gray-600 mb-6">
         Tell the provider what you need and when you’re available. They’ll confirm a time and, if needed, send a quote.
@@ -728,6 +714,52 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         )}
       </div>
 
+      {/* Customer details */}
+      <div className="mb-6 space-y-3">
+        <h3 className="text-sm font-medium">Your details</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Full name</label>
+            <input
+              className="w-full border rounded px-3 py-2"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder="Jane Doe"
+              autoComplete="name"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Phone number</label>
+            <input
+              type="tel"
+              className="w-full border rounded px-3 py-2"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+              placeholder="+353 85 123 4567"
+              autoComplete="tel"
+            />
+            {!customerPhone || isValidPhone(customerPhone) ? null : (
+              <div className="text-xs text-red-600 mt-1">Please enter a valid phone number.</div>
+            )}
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs text-gray-600 mb-1">Email</label>
+            <input
+              type="email"
+              className="w-full border rounded px-3 py-2"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              placeholder="jane@example.com"
+              autoComplete="email"
+            />
+            {!customerEmail || isValidEmail(customerEmail) ? null : (
+              <div className="text-xs text-red-600 mt-1">Please enter a valid email address.</div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Job details */}
       <div className="mb-6 space-y-2">
         <label className="block text-sm font-medium">Job title</label>
@@ -759,7 +791,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         />
       </div>
 
-      <div className="mb-6 space-y-2">
+      <div className="mb-6 space-y-2 mt-3">
         <label className="block text-sm font-medium">Eircode</label>
         <input
           className="w-full border rounded px-3 py-2"
@@ -813,7 +845,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
       </div>
 
       {/* Submit */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col md:flex-row md:items-center gap-3">
         <button
           disabled={!canSubmit || submitting}
           onClick={submit}
