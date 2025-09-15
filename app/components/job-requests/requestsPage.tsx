@@ -25,13 +25,12 @@ export type CustomerRequest = {
   pictures: string[];
   budgetMin?: number | null;
   budgetMax?: number | null;
-  status: "pending" | "proposed" | "confirmed" | "declined" | "completed" | string;
+  status: "pending" | "proposed" | "accepted" | "declined" | "completed" | string;
   createdAt: string | Date;
   updatedAt: string | Date;
   listing?: Provider | null;
   service?: Service | null;
   windows: RequestWindow[];
-  confirmedSlot?: { startAt: string | Date; endAt: string | Date } | null;
 };
 
 // —— Utils ——
@@ -54,7 +53,7 @@ const statusChip = (status: string) => {
       return base + " border-amber-300 bg-amber-50 text-amber-900";
     case "proposed":
       return base + " border-sky-300 bg-sky-50 text-sky-900";
-    case "confirmed":
+    case "accepted":
       return base + " border-emerald-300 bg-emerald-50 text-emerald-900";
     case "declined":
       return base + " border-rose-300 bg-rose-50 text-rose-900";
@@ -91,10 +90,10 @@ function MyRequestCard({ req, onAddWindow, onCancel, onMessage }: {
             <span>Updated {fmtDT(req.updatedAt)}</span>
           </div>
         </div>
-        <div className="flex gap-2">
+        {/*<div className="flex gap-2">
           <button onClick={() => onMessage(req.id)} className="rounded-md border bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-900 hover:bg-slate-100">Message</button>
           <button onClick={() => onCancel(req.id)} className="rounded-md border border-rose-200 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-900 hover:bg-rose-100">Cancel</button>
-        </div>
+        </div>*/}
       </div>
 
       <div className="grid gap-4 p-4 md:grid-cols-3">
@@ -134,9 +133,9 @@ function MyRequestCard({ req, onAddWindow, onCancel, onMessage }: {
             ) : (
               <div className="mt-2 text-sm text-slate-600">No time windows provided.</div>
             )}
-
+            
             {/* Propose new window */}
-            <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto] items-end">
+            {/*<div className="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto] items-end">
               <div>
                 <label className="mb-1 block text-[11px] uppercase tracking-wide text-slate-500">Start</label>
                 <input type="datetime-local" className="w-full rounded-md border px-3 py-2 text-sm" value={start} min={new Date().toISOString().slice(0,16)} onChange={(e)=>setStart(e.target.value)} />
@@ -151,7 +150,7 @@ function MyRequestCard({ req, onAddWindow, onCancel, onMessage }: {
               >
                 Add window
               </button>
-            </div>
+            </div>*/}
           </div>
 
           {/* Pictures */}
@@ -177,10 +176,14 @@ function MyRequestCard({ req, onAddWindow, onCancel, onMessage }: {
             <div className="text-sm font-bold text-slate-900">Provider</div>
             <div className="mt-2 text-sm text-slate-700">{req.listing?.company_name || req.listingId}</div>
             <div className="mt-1 text-xs text-slate-500">Service: <span className="font-medium text-slate-800">{req.service?.name || req.serviceId || '—'}</span></div>
-            {req.confirmedSlot ? (
+            {req.status === "accepted" ? (
               <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-2 text-xs text-emerald-900">
                 <div className="font-semibold">Confirmed</div>
-                <div>{fmtRange(req.confirmedSlot.startAt, req.confirmedSlot.endAt)}</div>
+                <div>
+                  {req.windows.length > 0
+                    ? fmtRange(req.windows[0].startAt, req.windows[0].endAt)
+                    : "No window selected"}
+                </div>
               </div>
             ) : (
               <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-2 text-xs text-sky-900">
@@ -209,7 +212,7 @@ interface RequestsPageProps {
 export default function MyRequestsPage({ userId }: RequestsPageProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [tab, setTab] = useState<"all" | "pending" | "confirmed" | "completed">("all");
+  const [tab, setTab] = useState<"all" | "pending" | "accepted" | "completed">("all");
   const [items, setItems] = useState<CustomerRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -286,7 +289,7 @@ export default function MyRequestsPage({ userId }: RequestsPageProps) {
         <h1 className="text-xl font-semibold text-slate-900">My Requests</h1>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           <div className="flex items-center gap-1 rounded-full border bg-white p-1">
-            {(["all","pending","confirmed","completed"] as const).map(t => (
+            {(["all","pending","accepted","completed"] as const).map(t => (
               <button key={t} onClick={() => setTab(t)} className={`rounded-full px-3 py-1 text-sm font-semibold ${tab===t? 'bg-slate-900 text-white' : 'text-slate-900 hover:bg-slate-100'}`}>{t[0].toUpperCase()+t.slice(1)}</button>
             ))}
           </div>
