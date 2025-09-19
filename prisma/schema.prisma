@@ -175,29 +175,31 @@ model Booking {
 }
 
 model Request {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
-  listingId   String         @db.ObjectId
-  serviceId   String?        @db.ObjectId
-  customerId  String         @db.ObjectId
-  title       String?
-  description String
-  county      String
-  address     String
-  customerName String
-  customerEmail String?
-  customerPhone String
-  pictures    String[]
-  budgetMin   Float?
-  budgetMax   Float?
-  status      String         @default("pending") // pending | declined | accepted
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  listingId      String         @db.ObjectId
+  serviceId      String?        @db.ObjectId
+  customerId     String         @db.ObjectId
+  title          String?
+  description    String
+  county         String
+  address        String
+  customerName   String
+  customerEmail  String?
+  customerPhone  String
+  pictures       String[]
+  budgetMin      Float?
+  budgetMax      Float?
+  status         String         @default("pending") // pending | declined | accepted
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  confirmedWindowId String?       @db.ObjectId
 
   // relations
-  listing     Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  service     Service?       @relation(fields: [serviceId], references: [id], onDelete: SetNull)
-  customer    User           @relation(fields: [customerId], references: [id], onDelete: Restrict)
-  windows     RequestWindow[]
+  listing      Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  service      Service?       @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  customer     User           @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  windows      RequestWindow[]
 
   @@index([listingId])
   @@index([customerId])
@@ -209,11 +211,11 @@ model RequestWindow {
   requestId String   @db.ObjectId
   startAt   DateTime
   endAt     DateTime
-
   request   Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
-
+  
   @@index([requestId])
 }
+
 
 
 model Reviews {

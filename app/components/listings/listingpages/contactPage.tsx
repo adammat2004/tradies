@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import RequestsImageUpload from "../../Inputs/requestsImageUpload";
+import { set } from "react-hook-form";
 
 /** ---------- Types ---------- */
 type PricingModel = "hourly" | "quote_only";
@@ -507,17 +509,37 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
     const fromQuery = u.searchParams.get("listingId");
     if (fromQuery) setListingId(fromQuery);
   }, [listingIdProp]);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  useEffect(() => {
+    try {
+      const getCurrentUser = async () => {
+        const res = await fetch('/api/get-current-user');
+        if (!res.ok) {
+          setIsUserLoggedIn(false);
+        }
+        const data = await res.json();
+        if (data?.data?.id){
+          setIsUserLoggedIn(true);
+        } else {
+          setIsUserLoggedIn(false);
+        }
+      }
+      getCurrentUser();
+    } catch (error) {
+      throw new Error('Error fetching user data');
+    }
+  },[])
 
   // --- Form state ---
   const [services, setServices] = useState<Service[]>([]);
   const [serviceId, setServiceId] = useState<string>("");
 
-  // ✨ NEW: customer details
+  //customer details
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
 
-  // validators (simple + permissive for intl numbers)
+  // validators 
   const isValidEmail = (s: string) => /\S+@\S+\.\S+/.test(s);
   const isValidPhone = (s: string) => s.replace(/\D/g, "").length >= 7;
 
@@ -536,7 +558,11 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
+  //images
+  const [images, setImages] = useState<string[]>([]);
+  const handleImageUpload = (newImages: string[]) => {
+    setImages((prev) => [...prev, ...newImages]);
+  };
   // --- Load services for this provider/listing ---
   useEffect(() => {
     async function load() {
@@ -615,7 +641,7 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         description,
         county: county,
         address: address || undefined,
-        pictures: [], // TODO: wire uploads
+        pictures: images,
         budgetMin: budgetMin !== "" ? Number(budgetMin) : undefined,
         budgetMax: budgetMax !== "" ? Number(budgetMax) : undefined,
         preferredWindows: windows
@@ -652,9 +678,15 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
     }
   };
 
+  
   return (
     <div className="w-full max-w-2xl mx-auto px-3 md:px-0">
       <h2 className="text-2xl font-semibold mb-2">Request a Booking</h2>
+      {isUserLoggedIn ? null : (
+        <div className="mb-4 rounded border border-yellow-300 bg-yellow-50 px-4 py-2 text-yellow-800">
+          You are not logged in. Please log in or create an account to submit a request.
+        </div>
+      )}
       <p className="text-sm text-gray-600 mb-6">
         Tell the provider what you need and when you’re available. They’ll confirm a time and, if needed, send a quote.
       </p>
@@ -837,11 +869,10 @@ const ContactPage: React.FC<ContactPageProps> = ({ listingId: listingIdProp }) =
         />
       )}
 
-      {/* Photos (stub) */}
+      {/* Photos*/}
       <div className="mb-6">
         <label className="block text-sm font-medium">Photos (optional)</label>
-        <div className="text-xs text-gray-500 mb-2">Unavailable for now.</div>
-        <div className="border rounded p-3 text-gray-500 text-sm">Uploads coming soon…</div>
+        <RequestsImageUpload value={images} onChange={handleImageUpload}/>
       </div>
 
       {/* Submit */}

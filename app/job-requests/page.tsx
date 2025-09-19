@@ -37,7 +37,6 @@ export default function WorkInfoSideTabs() {
     };
   }, []);
 
-  // Redirect if not in work mode
   useEffect(() => {
     if (loading) return;
     if (!currentUser) router.replace("/");

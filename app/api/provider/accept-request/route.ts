@@ -8,8 +8,11 @@ export async function POST(req: Request){
         if (!currentUser) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const url = new URL(req.url);
-        const requestId = url.searchParams.get("requestId");
+        const body = await req.json();
+        const { requestId, confirmedWindowId } = body;
+        if (!requestId || !confirmedWindowId) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
         const request = await prisma.request.findUnique({
             where: {
                 id: requestId as string,
@@ -26,6 +29,7 @@ export async function POST(req: Request){
             },
             data: {
                 status: "accepted",
+                confirmedWindowId: confirmedWindowId as string,
             },
         });
         return NextResponse.json({ message: "Request accepted" }, { status: 200 });

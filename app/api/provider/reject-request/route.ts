@@ -8,8 +8,8 @@ export async function POST(req: Request){
         if (!currentUser) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const url = new URL(req.url);
-        const requestId = url.searchParams.get("requestId");
+        const body = await req.json();
+        const { requestId } = body;
         const request = await prisma.request.findUnique({
             where: {
                 id: requestId as string,

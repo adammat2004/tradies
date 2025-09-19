@@ -8,12 +8,12 @@ export async function GET(req: Request){
     if(!currentUser){
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const listingId = currentUser.id;
+    {/*const listingId = currentUser.id;
     const listings = await prisma.listing.findMany({
         where: {
             userId: listingId
         },
-    })
+    })*/}
     {/*if(listings.length === 0){
         return NextResponse.json({error: 'No listings found'}, {status: 404});
     }*/}
