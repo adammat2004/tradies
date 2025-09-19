@@ -422,7 +422,7 @@ const PreferredTimes: React.FC<PreferredTimesProps> = ({ listingId, selectedServ
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">Preferred time windows (up to 3)</label>
+        <label className="text-sm font-medium">Preferred time windows for consultation (up to 3)</label>
         {windows.length < 3 && (
           <button type="button" onClick={addWindow} className="text-sm text-blue-600 hover:underline">
             + Add window
