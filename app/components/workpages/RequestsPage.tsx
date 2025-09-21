@@ -2,14 +2,6 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
-/**
- * Tailwind-styled single-file React component for displaying job requests.
- * - Uses Tailwind classes only (no external UI libraries).
- * - Availability list is selectable (radio style).
- * - Accept posts { requestId, windowId } so the backend knows which slot was chosen.
- */
-
-// ——— Types mirroring your Prisma schema ———
 export type RequestWindow = {
   id: string;
   requestId: string;

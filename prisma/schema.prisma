@@ -299,6 +299,12 @@ model Quote {
   user       User     @relation(fields: [userId], references: [id])
   userId     String   @db.ObjectId
 
+  // optional link to a job request
+  requestId  String?  @db.ObjectId
+
+  // (optional) store a rendered PDF/image URL for preview in the Request page
+  fileUrl    String?
+
   // Customer Info
   customerName     String
   customerEmail    String
@@ -339,7 +345,7 @@ model Table {
 
 model Item {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  data      Json     // NEW: Holds all dynamic fields like quantity, price, etc.
+  data      Json     // Dynamic fields stored as JSON
   tableId   String   @db.ObjectId
   table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
 }
